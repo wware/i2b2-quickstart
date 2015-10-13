@@ -42,15 +42,24 @@ if [ -f $JBOSS_FILE ]
 then echo "FOUND $JBOSS_FILE"
 else
 	wget http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/$JBOSS_FILE
+fi
+
+if [ -f $JBOSS_HOME ]
+then echo "FOUND $JBOSS_HOME"
+else
 	tar -xvzf $JBOSS_FILE
-	mkdir $JBOSS_HOME/standalone/deployments/i2b2.war
+	mkdir -p $JBOSS_HOME/standalone/deployments/i2b2.war
 
 	mkdir axis
 	cd axis
 	unzip ../$AXIS_FILE
-	mv  axis.war $JBOSS_HOME/standalone/deployments/i2b2.war/axis.zip
+	mv  axis2.war axis2.zip
+	cd "$JBOSS_HOME/standalone/deployments/i2b2.war"
+	unzip $BASE/axis/axis2.zip
 	echo ""> $JBOSS_HOME/standalone/deployments/i2b2.war.dodeploy
 fi
+
+cd "$BASE"
 
 
 #install postgresql
@@ -61,7 +70,7 @@ fi
 echo "PWD:$PWD"
 echo "ANT:$ANT"
 
-if [ -d data ]
+if [ -d "$BASE/data" ]
 then echo "found DATA FLAG"
 else
 mkdir data
@@ -118,4 +127,6 @@ cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 cp "$BASE/data_config/pm/pm-ds.xml" "$TAR_DIR/etc/jboss/pm-ds.xml"
 ant -f master_build.xml clean build-all deploy
+
+cd $JBOSS_HOME
 sh $JBOSS_HOME/bin/standalone.sh
