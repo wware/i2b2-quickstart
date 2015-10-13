@@ -44,7 +44,7 @@ else
 	wget http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/$JBOSS_FILE
 fi
 
-if [ -f $JBOSS_HOME ]
+if [ -d $JBOSS_HOME ]
 then echo "FOUND $JBOSS_HOME"
 else
 	tar -xvzf $JBOSS_FILE
@@ -73,7 +73,7 @@ echo "ANT:$ANT"
 if [ -d "$BASE/data" ]
 then echo "found DATA FLAG"
 else
-mkdir data
+mkdir "$BASE/data"
 unzip ../zip_files/i2b2createdb-1706.zip
 cd data/edu.harvard.i2b2.data/Release_1-7/NewInstall/
 
