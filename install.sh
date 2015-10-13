@@ -3,6 +3,10 @@ export AXIS_FILE=axis2-1.6.2-war.zip
 export JDK_FILE=jdk-7u51-linux-x64.tar.gz
 export ANT_FILE=apache-ant-1.9.6-bin.tar.bz2
 
+export PWD=$(pwd)
+export  ANT="$PWD/apache-ant-1.9.6/bin/ant"
+alias ant=$ANT
+
 if [ -f $AXIS_FILE ]
 then echo ""
 else
@@ -28,5 +32,44 @@ fi
 #create  users
 #create dbs and grant permissions
 #run data upload script
-sh data_script.sh
+echo "PWD:$PWD"
+echo "ANT:$ANT"
 
+cd data/edu.harvard.i2b2.data/Release_1-7/NewInstall/
+
+cd Crcdata
+mv data_build.xml build.xml
+mv ../../../../../data_config/crc/db.properties db.properties
+ant create_crcdata_tables_release_1-7
+ant db_demodata_load_data
+
+cd ../Hivedata
+mv ../../../../../data_config/hive/db.properties db.properties
+mv data_build.xml build.xml
+ant create_hivedata_tables_release_1-7
+ant db_hivedata_load_data
+
+cd ../Imdata
+mv data_build.xml build.xml
+mv ../../../../../data_config/im/db.properties db.properties
+ant create_imdata_tables_release_1-7
+ant db_imdata_load_data
+
+cd ../Metadata
+mv data_build.xml build.xml
+mv ../../../../../data_config/meta/db.properties db.properties
+ant create_metadata_tables_release_1-7
+ant db_metadata_load_data
+
+cd ../Pmdata
+mv data_build.xml build.xml
+mv ../../../../../data_config/pm/db.properties db.properties
+ant create_pmdata_tables_release_1-7
+ant create_triggers_release_1-7
+ant db_pmdata_load_data
+
+cd ../Workdata
+mv data_build.xml build.xml
+mv ../../../../../data_config/work/db.properties db.properties
+ant create_workdata_tables_release_1-7
+ant db_workdata_load_data
