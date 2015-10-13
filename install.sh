@@ -76,7 +76,7 @@ else
 mkdir "$BASE/data"
 cd "$BASE/data"
 unzip ../zip_files/i2b2createdb-1706.zip
-cd data/edu.harvard.i2b2.data/Release_1-7/NewInstall/
+cd "$BASE/data/edu.harvard.i2b2.data/Release_1-7/NewInstall/"
 
 cd Crcdata
 mv data_build.xml build.xml
