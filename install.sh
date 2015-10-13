@@ -7,6 +7,14 @@ export PWD=$(pwd)
 export  ANT="$PWD/apache-ant-1.9.6/bin/ant"
 alias ant=$ANT
 
+export  JAVA="$PWD/jdk1.7.0_51/bin/java"
+export  JAVA_HOME="$PWD/jdk1.7.0_51"
+alias java="$JAVA"
+
+export JBOSS_FILE=jboss-as-7.1.1.Final.tar.gz
+
+export  DATA_FLAG="$PWD/data_flag"
+
 if [ -f $AXIS_FILE ]
 then echo ""
 else
@@ -27,6 +35,15 @@ else
 	wget http://apache.mirrors.ionfish.org//ant/binaries/$ANT_FILE
 	tar -xvjf $ANT_FILE 
 fi
+
+
+if [ -f $JBOSS_FILE ]
+then echo "FOUND $JBOSS_FILE"
+else
+	wget http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/$JBOSS_FILE
+	tar -xvzf $JBOSS_FILE
+fi
+
 #install postgresql
 #enable permission
 #create  users
@@ -35,41 +52,48 @@ fi
 echo "PWD:$PWD"
 echo "ANT:$ANT"
 
+if [ -f $DATA_FLAG ]
+then echo "found DATA FLAG"
+else
+echo ""> $DATA_FLAG
+
 cd data/edu.harvard.i2b2.data/Release_1-7/NewInstall/
 
 cd Crcdata
 mv data_build.xml build.xml
-mv ../../../../../data_config/crc/db.properties db.properties
+cp ../../../../../data_config/crc/db.properties db.properties
 ant create_crcdata_tables_release_1-7
 ant db_demodata_load_data
 
 cd ../Hivedata
-mv ../../../../../data_config/hive/db.properties db.properties
+cp ../../../../../data_config/hive/db.properties db.properties
 mv data_build.xml build.xml
 ant create_hivedata_tables_release_1-7
 ant db_hivedata_load_data
 
 cd ../Imdata
 mv data_build.xml build.xml
-mv ../../../../../data_config/im/db.properties db.properties
+cp ../../../../../data_config/im/db.properties db.properties
 ant create_imdata_tables_release_1-7
 ant db_imdata_load_data
 
 cd ../Metadata
 mv data_build.xml build.xml
-mv ../../../../../data_config/meta/db.properties db.properties
+cp ../../../../../data_config/meta/db.properties db.properties
 ant create_metadata_tables_release_1-7
 ant db_metadata_load_data
 
 cd ../Pmdata
 mv data_build.xml build.xml
-mv ../../../../../data_config/pm/db.properties db.properties
+cp ../../../../../data_config/pm/db.properties db.properties
 ant create_pmdata_tables_release_1-7
 ant create_triggers_release_1-7
 ant db_pmdata_load_data
 
 cd ../Workdata
 mv data_build.xml build.xml
-mv ../../../../../data_config/work/db.properties db.properties
+cp ../../../../../data_config/work/db.properties db.properties
 ant create_workdata_tables_release_1-7
 ant db_workdata_load_data
+
+fi
