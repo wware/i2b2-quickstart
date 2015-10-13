@@ -1,9 +1,12 @@
 
+
 export AXIS_FILE=axis2-1.6.2-war.zip
 export JDK_FILE=jdk-7u51-linux-x64.tar.gz
 export ANT_FILE=apache-ant-1.9.6-bin.tar.bz2
 
 export PWD=$(pwd)
+export BASE=$PWD
+export COM_DIR="$PWD/server-common"
 export  ANT="$PWD/apache-ant-1.9.6/bin/ant"
 alias ant=$ANT
 
@@ -12,15 +15,8 @@ export  JAVA_HOME="$PWD/jdk1.7.0_51"
 alias java="$JAVA"
 
 export JBOSS_FILE=jboss-as-7.1.1.Final.tar.gz
+export  JBOSS_HOME="$PWD/jboss-as-7.1.1.Final"
 
-export  DATA_FLAG="$PWD/data_flag"
-
-if [ -f $AXIS_FILE ]
-then echo ""
-else
-	wget https://www.i2b2.org/software/projects/installer/$AXIS_FILE	
-	#tar -xvzf $AXIS_FILE
-fi	
 
 if [ -f $JDK_FILE ]
 then echo "FOUND $JDK_FILE" 
@@ -36,13 +32,26 @@ else
 	tar -xvjf $ANT_FILE 
 fi
 
+if [ -f $AXIS_FILE ]
+then echo ""
+else
+	wget https://www.i2b2.org/software/projects/installer/$AXIS_FILE	
+fi	
 
 if [ -f $JBOSS_FILE ]
 then echo "FOUND $JBOSS_FILE"
 else
 	wget http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/$JBOSS_FILE
 	tar -xvzf $JBOSS_FILE
+	mkdir $JBOSS_HOME/standalone/deployments/i2b2.war
+
+	mkdir axis
+	cd axis
+	unzip ../$AXIS_FILE
+	mv  axis.war $JBOSS_HOME/standalone/deployments/i2b2.war/axis.zip
+	echo ""> $JBOSS_HOME/standalone/deployments/i2b2.war.dodeploy
 fi
+
 
 #install postgresql
 #enable permission
@@ -52,11 +61,11 @@ fi
 echo "PWD:$PWD"
 echo "ANT:$ANT"
 
-if [ -f $DATA_FLAG ]
+if [ -d data ]
 then echo "found DATA FLAG"
 else
-echo ""> $DATA_FLAG
-
+mkdir data
+unzip ../zip_files/i2b2createdb-1706.zip
 cd data/edu.harvard.i2b2.data/Release_1-7/NewInstall/
 
 cd Crcdata
@@ -97,3 +106,16 @@ ant create_workdata_tables_release_1-7
 ant db_workdata_load_data
 
 fi
+
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.server-common"
+cd $TAR_DIR
+echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
+ant clean dist deploy jboss_pre_deployment_setup
+
+
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.pm"
+cd $TAR_DIR
+echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
+cp "$BASE/data_config/pm/pm-ds.xml" "$TAR_DIR/etc/jboss/pm-ds.xml"
+ant -f master_build.xml clean build-all deploy
+sh $JBOSS_HOME/bin/standalone.sh
