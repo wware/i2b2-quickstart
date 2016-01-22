@@ -129,5 +129,21 @@ echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 cp "$BASE/data_config/pm/pm-ds.xml" "$TAR_DIR/etc/jboss/pm-ds.xml"
 ant -f master_build.xml clean build-all deploy
 
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.ontology"
+cd $TAR_DIR
+echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
+echo "edu.harvard.i2b2.ontology.applicationdir=$JBOSS_HOME/standalone/configuration/ontologyapp" >> "$TAR_DIR/etc/spring/ontology_application_directory.properties"
+#change PMCELL port in ontology.properties 
+cp "$BASE/config/ont/ont-ds.xml" "$TAR_DIR/etc/jboss/ont-ds.xml"
+ant -f master_build.xml clean build-all deploy
+
+
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.crc"
+cd $TAR_DIR
+echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
+echo "edu.harvard.i2b2.crc.applicationdir=$JBOSS_HOME/standalone/configuration/crcapp" >> "$TAR_DIR/etc/spring/crc_application_directory.properties"
+#cp "$BASE/config/crc/crc-ds.xml" "$TAR_DIR/etc/jboss/ont-ds.xml"
+ant -f master_build.xml clean build-all deploy
+
 cd $JBOSS_HOME
 sh $JBOSS_HOME/bin/standalone.sh
