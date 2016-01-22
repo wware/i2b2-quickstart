@@ -142,7 +142,7 @@ export TAR_DIR="$COM_DIR/edu.harvard.i2b2.crc"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 echo "edu.harvard.i2b2.crc.applicationdir=$JBOSS_HOME/standalone/configuration/crcapp" >> "$TAR_DIR/etc/spring/crc_application_directory.properties"
-#cp "$BASE/config/crc/crc-ds.xml" "$TAR_DIR/etc/jboss/ont-ds.xml"
+cp "$BASE/config/crc/crc-ds.xml" "$TAR_DIR/etc/jboss/crc-ds.xml"
 ant -f master_build.xml clean build-all deploy
 
 cd $JBOSS_HOME
