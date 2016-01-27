@@ -81,42 +81,44 @@ cd "$BASE/data/edu.harvard.i2b2.data/Release_1-7/NewInstall/"
 cd Crcdata
 mv data_build.xml build.xml
 cp ../../../../../data_config/crc/db.properties db.properties
-ant create_crcdata_tables_release_1-7
-ant db_demodata_load_data
+#ant create_crcdata_tables_release_1-7
+#ant db_demodata_load_data
 
 cd ../Hivedata
 cp ../../../../../data_config/hive/db.properties db.properties
 mv data_build.xml build.xml
-ant create_hivedata_tables_release_1-7
-ant db_hivedata_load_data
+#ant create_hivedata_tables_release_1-7
+#ant db_hivedata_load_data
 
 cd ../Imdata
 mv data_build.xml build.xml
 cp ../../../../../data_config/im/db.properties db.properties
-ant create_imdata_tables_release_1-7
-ant db_imdata_load_data
+#ant create_imdata_tables_release_1-7
+#ant db_imdata_load_data
 
 cd ../Metadata
 mv data_build.xml build.xml
 cp ../../../../../data_config/meta/db.properties db.properties
-ant create_metadata_tables_release_1-7
-ant db_metadata_load_data
+#ant create_metadata_tables_release_1-7
+#ant db_metadata_load_data
 
 cd ../Pmdata
 mv data_build.xml build.xml
 cp ../../../../../data_config/pm/db.properties db.properties
-ant create_pmdata_tables_release_1-7
-ant create_triggers_release_1-7
-ant db_pmdata_load_data
+#ant create_pmdata_tables_release_1-7
+#ant create_triggers_release_1-7
+#ant db_pmdata_load_data
 
 cd ../Workdata
 mv data_build.xml build.xml
 cp ../../../../../data_config/work/db.properties db.properties
-ant create_workdata_tables_release_1-7
-ant db_workdata_load_data
+#ant create_workdata_tables_release_1-7
+#ant db_workdata_load_data
 
 fi
 
+if [1 == 2]
+then
 export TAR_DIR="$COM_DIR/edu.harvard.i2b2.server-common"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
@@ -150,12 +152,15 @@ cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2
 cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
 ant -f master_build.xml clean build-all deploy
 
-export TAR_DIR="$COM_DIR/edu.harvard.i2b2.workplace"
+export CELL_NAME="workplace"
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.${CELL_NAME}"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-cp "$BASE/data_config/workplace*" server-common/edu.harvard.i2b2.workplace/etc/spring/
+cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
+cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
 cp "$BASE/data_config/work/work-ds.xml" server-common/edu.harvard.i2b2.workplace/etc/jboss/work-ds.xml 
 ant -f master_build.xml clean build-all deploy
 
+fi;
 cd $JBOSS_HOME
 sh $JBOSS_HOME/bin/standalone.sh
