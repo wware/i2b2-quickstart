@@ -123,26 +123,38 @@ echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 ant clean dist deploy jboss_pre_deployment_setup
 
 
-export TAR_DIR="$COM_DIR/edu.harvard.i2b2.pm"
+export CELL_NAME="pm"
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.${CELL_NAME}"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-cp "$BASE/data_config/pm/pm-ds.xml" "$TAR_DIR/etc/jboss/pm-ds.xml"
+cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
+cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
 ant -f master_build.xml clean build-all deploy
 
-export TAR_DIR="$COM_DIR/edu.harvard.i2b2.ontology"
+export CELL_NAME="ontology"
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.${CELL_NAME}"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 echo "edu.harvard.i2b2.ontology.applicationdir=$JBOSS_HOME/standalone/configuration/ontologyapp" >> "$TAR_DIR/etc/spring/ontology_application_directory.properties"
 #change PMCELL port in ontology.properties 
-cp "$BASE/config/ont/ont-ds.xml" "$TAR_DIR/etc/jboss/ont-ds.xml"
+cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
+cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
 ant -f master_build.xml clean build-all deploy
 
 
-export TAR_DIR="$COM_DIR/edu.harvard.i2b2.crc"
+export CELL_NAME="crc"
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.${CELL_NAME}"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-echo "edu.harvard.i2b2.crc.applicationdir=$JBOSS_HOME/standalone/configuration/crcapp" >> "$TAR_DIR/etc/spring/crc_application_directory.properties"
-cp "$BASE/config/crc/crc-ds.xml" "$TAR_DIR/etc/jboss/crc-ds.xml"
+cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
+cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
+ant -f master_build.xml clean build-all deploy
+
+export TAR_DIR="$COM_DIR/edu.harvard.i2b2.workplace"
+cd $TAR_DIR
+echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
+cp "$BASE/data_config/workplace*" server-common/edu.harvard.i2b2.workplace/etc/spring/
+cp "$BASE/data_config/work/work-ds.xml" server-common/edu.harvard.i2b2.workplace/etc/jboss/work-ds.xml 
 ant -f master_build.xml clean build-all deploy
 
 cd $JBOSS_HOME
