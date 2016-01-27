@@ -117,7 +117,7 @@ cp ../../../../../data_config/work/db.properties db.properties
 
 fi
 
-if [1 == 2]
+if [1 == 1]
 then
 export TAR_DIR="$COM_DIR/edu.harvard.i2b2.server-common"
 cd $TAR_DIR
