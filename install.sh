@@ -57,6 +57,8 @@ else
 	cd "$JBOSS_HOME/standalone/deployments/i2b2.war"
 	unzip $BASE/axis/axis2.zip
 	echo ""> $JBOSS_HOME/standalone/deployments/i2b2.war.dodeploy
+	sed -i -e s/port-offset:0/port-offset:1010/  "$JBOSS_HOME/standalone/configuration/standalone.xml"
+
 fi
 
 cd "$BASE"
@@ -111,7 +113,7 @@ cp ../../../../../data_config/pm/db.properties db.properties
 
 cd ../Workdata
 mv data_build.xml build.xml
-cp ../../../../../data_config/work/db.properties db.properties
+cp ../../../../../data_config/work_place/db.properties db.properties
 #ant create_workdata_tables_release_1-7
 #ant db_workdata_load_data
 
