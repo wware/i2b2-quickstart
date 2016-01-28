@@ -160,6 +160,7 @@ cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
 cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
+
 #d "$BASE"
 ant -f master_build.xml clean build-all deploy
 

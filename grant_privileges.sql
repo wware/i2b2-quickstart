@@ -23,4 +23,6 @@ grant all privileges on qt_result_instance_result_instance_id_seq to public;
 grant all privileges on qt_query_result_instance_result_instance_id_seq to public; 
 grant all privileges on qt_xml_result_xml_result_id_seq to public; 
 grant all privileges on workplace to public; 
-grant all privileges on workplace_access to public; 
+grant all privileges on workplace_access to public;
+grant all privileges on schema i2b2hive to public; 
+grant all privileges on all tables in schema i2b2hive to public; 
