@@ -119,7 +119,7 @@ cp ../../../../../data_config/work_place/db.properties db.properties
 
 fi
 
-if [1 == 1]
+if [ 1 == 1 ]
 then
 export TAR_DIR="$COM_DIR/edu.harvard.i2b2.server-common"
 cd $TAR_DIR
@@ -160,7 +160,7 @@ cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
 cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
-cp "$BASE/data_config/work/work-ds.xml" server-common/edu.harvard.i2b2.workplace/etc/jboss/work-ds.xml 
+#d "$BASE"
 ant -f master_build.xml clean build-all deploy
 
 fi;

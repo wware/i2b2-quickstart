@@ -24,15 +24,17 @@ cat scripts/crc_create_query_postgresql.sql|psql -U postgres i2b2
 cat scripts/crc_create_uploader_postgresql.sql|psql -U postgres i2b2
 cat scripts/expression_concept_demo_insert_data.sql|psql -U postgres i2b2
 cat scripts/expression_obs_demo_insert_data.sql|psql -U postgres i2b2
-#for x in $(ls scripts/postgresql/); do cat scripts/postgresql/$x|psql -U postgres i2b2;done;
+for x in $(ls scripts/postgresql/); do cat scripts/postgresql/$x|psql -U postgres i2b2;done;
 
 cd "$BASE/data/edu.harvard.i2b2.data/Release_1-7/NewInstall/Hivedata/"
-#for x in $(ls scripts/*postgresql*); do echo "SET search_path TO i2b2hivedata;">/tmp/t ;cat scripts/$x>>/tmp/t;cat /tmp/t|psql -U postgres i2b2 ;done;
-#for x in $(ls scripts/*postgresql*); do echo "SET search_path TO i2b2hivedata;">/tmp/t ;cat $x>>/tmp/t;cat /tmp/t|psql -U postgres i2b2 ;done;
+for x in $(ls scripts/*postgresql*); do echo "SET search_path TO i2b2hivedata;">/tmp/t ;cat scripts/$x>>/tmp/t;cat /tmp/t|psql -U postgres i2b2 ;done;
+for x in $(ls scripts/*postgresql*); do echo "SET search_path TO i2b2hivedata;">/tmp/t ;cat $x>>/tmp/t;cat /tmp/t|psql -U postgres i2b2 ;done;
 
 cd ../Pmdata/
-for x in $(ls scripts/*postgresql*); do echo "SET search_path TO i2b2pm;">/tmp/t ;cat $x>>/tmp/t;cat /tmp/t|psql -U postgres i2b2 ;done;s
-echo "SET search_path TO i2b2pm;">/tmp/t ;cat scripts/pm_access_insert_data.sql>>/tmp/t;cat /tmp/t|psql -U postgres i2b2
+for x in $(ls scripts/*postgresql*); do echo $x;cat scripts/$x|psql -U postgres i2b2 ;done;
+cat scripts/pm_access_insert_data.sql|psql -U postgres i2b2
+#for x in $(ls scripts/*postgresql*); do echo "SET search_path TO i2b2pm;">/tmp/t ;cat $x>>/tmp/t;cat /tmp/t|psql -U postgres i2b2 ;done;
+#echo "SET search_path TO i2b2pm;">/tmp/t ;cat scripts/pm_access_insert_data.sql>>/tmp/t;cat /tmp/t|psql -U postgres i2b2
 
 echo "grant all privileges on all tables in schema i2b2hive to i2b2hive;"|psql -U postgres i2b2
 
