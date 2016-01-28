@@ -131,8 +131,8 @@ export CELL_NAME="pm"
 export TAR_DIR="$COM_DIR/edu.harvard.i2b2.${CELL_NAME}"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
-cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
+cp -rv "$BASE"/data_config/"$CELL_NAME"/etc-spring/* etc/spring/
+cp -rv "$BASE"/data_config/"$CELL_NAME"/jboss/* etc/jboss/
 ant -f master_build.xml clean build-all deploy
 
 export CELL_NAME="ontology"
@@ -141,8 +141,8 @@ cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 echo "edu.harvard.i2b2.ontology.applicationdir=$JBOSS_HOME/standalone/configuration/ontologyapp" >> "$TAR_DIR/etc/spring/ontology_application_directory.properties"
 #change PMCELL port in ontology.properties 
-cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
-cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
+cp -rv "$BASE"/data_config/"$CELL_NAME"/etc-spring/* etc/spring/
+cp -rv "$BASE"/data_config/"$CELL_NAME"/jboss/* etc/jboss/
 ant -f master_build.xml clean build-all deploy
 
 
@@ -150,20 +150,21 @@ export CELL_NAME="crc"
 export TAR_DIR="$COM_DIR/edu.harvard.i2b2.${CELL_NAME}"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
-cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
+cp -rv "$BASE"/data_config/"$CELL_NAME"/etc-spring/* etc/spring/
+cp -rv "$BASE"/data_config/"$CELL_NAME"/jboss/* etc/jboss/
 ant -f master_build.xml clean build-all deploy
 
 export CELL_NAME="workplace"
 export TAR_DIR="$COM_DIR/edu.harvard.i2b2.${CELL_NAME}"
 cd $TAR_DIR
 echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-cp "$BASE/data_config/${CELL_NAME}/etc-spring/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/spring/"
-cp "$BASE/data_config/${CELL_NAME}/jboss/*" "server-common/edu.harvard.i2b2.${CELL_NAME}/etc/jboss/" 
-
-#d "$BASE"
+cp -rv "$BASE"/data_config/"$CELL_NAME"/etc-spring/* etc/spring/
+cp -rv "$BASE"/data_config/"$CELL_NAME"/jboss/* etc/jboss/
+echo "PWD:$PWD"
 ant -f master_build.xml clean build-all deploy
 
 fi;
+
+
 cd $JBOSS_HOME
 sh $JBOSS_HOME/bin/standalone.sh
