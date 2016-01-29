@@ -53,8 +53,15 @@ export x="scripts/workplace_access_demo_insert_data.sql"; echo $x;cat $x|psql -U
 cd "$BASE"
 cat grant_privileges.sql |psql -U postgres i2b2
 
-if [ -d /var/www/html/admin ]
-then echo "admin folder already exists"
+if [ -d "$BASE/i2b2webclient-1707" ]
+then "echo webclient already unzipped"
+else 
+	unzip zip_files/i2b2webclient-1707.zip
+
+fi
+
+if [ -d /var/www/html/webclient ]
+then echo "webclient folder already exists"
 else 
 	cp -rv server-common/admin /var/www/html/
 	cp -rv i2b2webclient-1707/webclient /var/www/html/
@@ -63,4 +70,4 @@ else
 
 fi
 #cd "$BASE"
-find -L . -type f -print | xargs sed -i 's/8080/9090/g'
+find -L . -type f -print | xargs sed -i 's/9090/9090/g'

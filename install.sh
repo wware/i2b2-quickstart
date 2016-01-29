@@ -72,13 +72,19 @@ cd "$BASE"
 echo "PWD:$PWD"
 echo "ANT:$ANT"
 
+if [ -d "$BASE/i2b2webclient-1707" ]
+then "echo webclient already unzipped"
+else
+        unzip zip_files/i2b2webclient-1707.zip
+
+fi
+
 if [ -d "$BASE/data" ]
 then echo "found DATA FLAG"
 else
 mkdir "$BASE/data"
 cd "$BASE/data"
 
-unzip ../zip_files/i2b2webclient-1707.zip
 unzip ../zip_files/i2b2createdb-1706.zip
 cd "$BASE/data/edu.harvard.i2b2.data/Release_1-7/NewInstall/"
 
