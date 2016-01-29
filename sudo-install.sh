@@ -57,7 +57,7 @@ if [ -d /var/www/html/admin ]
 then echo "admin folder already exists"
 else 
 	cp -rv server-common/admin /var/www/html/
-	cp i2b2webclient-1707/webclient /var/www/html/
+	cp -rv i2b2webclient-1707/webclient /var/www/html/
 	cp conf/webclient/i2b2_config_data.js /var/www/html/webclient/
 	cp conf/admin/i2b2_config_data.js /var/www/html/admin/
 

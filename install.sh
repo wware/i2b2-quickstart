@@ -77,6 +77,8 @@ then echo "found DATA FLAG"
 else
 mkdir "$BASE/data"
 cd "$BASE/data"
+
+unzip ../zip_files/i2b2webclient-1707.zip
 unzip ../zip_files/i2b2createdb-1706.zip
 cd "$BASE/data/edu.harvard.i2b2.data/Release_1-7/NewInstall/"
 
