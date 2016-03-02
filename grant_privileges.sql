@@ -21,6 +21,8 @@ grant all privileges on qt_query_master_query_master_id_seq to public;
 grant all privileges on qt_query_instance_query_instance_id_seq to public; 
 grant all privileges on qt_result_instance_result_instance_id_seq to public; 
 grant all privileges on qt_query_result_instance_result_instance_id_seq to public; 
+grant all privileges on qt_patient_set_collection_patient_set_coll_id_seq to public;
+grant all privileges on qt_pdo_query_master_query_master_id_seq to public;
 grant all privileges on qt_xml_result_xml_result_id_seq to public; 
 grant all privileges on workplace to public; 
 grant all privileges on workplace_access to public;
