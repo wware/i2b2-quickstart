@@ -7,3 +7,10 @@ cd i2b2-install
 sudo sh sudo-install.sh
 
 sh install.sh
+
+#############
+to allow remote connections to database add 
+
+listen_addresses='*'
+
+to /var/lib/pgsql9/data/postgresql.conf
