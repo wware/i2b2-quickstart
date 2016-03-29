@@ -6,6 +6,8 @@ cd i2b2-install
 
 sudo sh sudo-install.sh
 
+Ctrl-X
+
 sh install.sh
 
 #############
