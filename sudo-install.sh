@@ -70,9 +70,12 @@ load_demo_data(){
 
 install_webclient(){
 
-	if [ -d "$BASE/i2b2webclient-1707" ]
+	BASE="/home/ec2-user/i2b2-install"
+	WC_SRC_BASE=$BASE/unzipped_packages/i2b2-webclient-master
+	if [ -d "$WC_SRC_BASE" ]
 	then "echo webclient already unzipped"
-	else 
+	else
+		cd $BASE/unzipped_files 
 		unzip zip_files/i2b2webclient-1707.zip
 
 	fi
@@ -81,7 +84,7 @@ install_webclient(){
 	then echo "webclient folder already exists"
 	else 
 		cp -rv server-common/admin /var/www/html/
-		cp -rv i2b2webclient-1707/webclient /var/www/html/
+		cp -rv $WC_SRC_BASE/ /var/www/html/webclient/
 		cp conf/webclient/i2b2_config_data.js /var/www/html/webclient/
 		cp conf/admin/i2b2_config_data.js /var/www/html/admin/
 
@@ -90,4 +93,6 @@ install_webclient(){
 #
 #find -L . -type f -print | xargs sed -i 's/9090/9090/g'
 }
-load_demo_data
+#load_demo_data
+#install_webclient
+install_httpd
