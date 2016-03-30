@@ -162,7 +162,6 @@ compile_i2b2core(){
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
 	ant -f master_build.xml clean build-all deploy
-exit
 
 	#etc/jboss/*-ds.xml dataSourceconfig files are finally placed into deployment dir
 	#etc/spring/*.properties file finally go into $JBOSS_HOME/standalone/configuration/*/ 
@@ -200,7 +199,7 @@ exit
 	export TAR_DIR="$BASE_CORE/edu.harvard.i2b2.${CELL_NAME}"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-	cp -rv "$CONF_DIR/$CELL_NAME"/jboss/* etc/jboss/
+	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
 	echo "edu.harvard.i2b2.workplace.applicationdir=$JBOSS_HOME/standalone/configuration/workplaceapp" >> "$TAR_DIR/etc/spring/workplace_application_directory.properties"
 	ant -f master_build.xml clean build-all deploy
 
@@ -221,3 +220,4 @@ install_wildfly
 compile_i2b2core
 #run_wildfly
 
+#change path to cells in the hive after logging in as admin
