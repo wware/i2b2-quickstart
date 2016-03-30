@@ -147,7 +147,7 @@ ignore(){
 compile_i2b2core(){
 	local BASE="/home/ec2-user/i2b2-install"
 	local BASE_CORE="$BASE/unzipped_packages/i2b2-core-server-master/"
-	local CONF_DIR=$BASE/data_config
+	local CONF_DIR=$BASE/config
 	
 	local TAR_DIR="$BASE_CORE/edu.harvard.i2b2.server-common"
 	cd $TAR_DIR
@@ -162,34 +162,46 @@ compile_i2b2core(){
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
 	ant -f master_build.xml clean build-all deploy
+exit
 
+	#etc/jboss/*-ds.xml dataSourceconfig files are finally placed into deployment dir
+	#etc/spring/*.properties file finally go into $JBOSS_HOME/standalone/configuration/*/ 
+	
+	#default ontology.properties is used
+	#ontology_application_directory.properties is appended : edu.harvard.i2b2.ontology.applicationdir=/YOUR_JBOSS_HOME_DIR/standalone/configuration/ontologyapp
+	#JBOSS home is appended to build.properties
+	#data source config files is copied
 	CELL_NAME="ontology"
 	TAR_DIR="$BASE_CORE/edu.harvard.i2b2.${CELL_NAME}"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 	echo "edu.harvard.i2b2.ontology.applicationdir=$JBOSS_HOME/standalone/configuration/ontologyapp" >> "$TAR_DIR/etc/spring/ontology_application_directory.properties"
-	
-	#change PMCELL port in ontology.properties 
-	cp -rv "$CONF_DIR/$CELL_NAME"/etc-spring/* etc/spring/
-	cp -rv "$CONF_DIR/$CELL_NAME"/jboss/* etc/jboss/
+	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
 	ant -f master_build.xml clean build-all deploy
 
 
+	#default /etc/spring/crc.properties is used
+	#crc_application_directory.properties is appended : edu.harvard.i2b2.crc.applicationdir=/YOUR_JBOSS_HOME_DIR/standalone/configuration/crcapp
+	#JBOSS home is appended to build.properties
+	#data source config files is copied
 	export CELL_NAME="crc"
 	export TAR_DIR="$BASE_CORE/edu.harvard.i2b2.${CELL_NAME}"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-	cp -rv "$CONF_DIR/$CELL_NAME"/etc-spring/* etc/spring/
-	cp -rv "$CONF_DIR/$CELL_NAME"/jboss/* etc/jboss/
+	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
+	echo "edu.harvard.i2b2.crc.applicationdir=$JBOSS_HOME/standalone/configuration/crcapp" >> "$TAR_DIR/etc/spring/crc_application_directory.properties"
 	ant -f master_build.xml clean build-all deploy
 
+	#default /etc/spring/workplace.properties is used
+	#workplace_application_directory.properties is appended : edu.harvard.i2b2.workplace.applicationdir=/YOUR_JBOSS_HOME_DIR/standalone/configuration/workplaceapp
+	#JBOSS home is appended to build.properties
+	#data source config files is copied
 	export CELL_NAME="workplace"
 	export TAR_DIR="$BASE_CORE/edu.harvard.i2b2.${CELL_NAME}"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-	cp -rv "$CONF_DIR/$CELL_NAME"/etc-spring/* etc/spring/
 	cp -rv "$CONF_DIR/$CELL_NAME"/jboss/* etc/jboss/
-	echo "PWD:$PWD"
+	echo "edu.harvard.i2b2.workplace.applicationdir=$JBOSS_HOME/standalone/configuration/workplaceapp" >> "$TAR_DIR/etc/spring/workplace_application_directory.properties"
 	ant -f master_build.xml clean build-all deploy
 
 
@@ -201,11 +213,11 @@ run_wildfly(){
 }
 
 
-install_java
-install_ant
-download_axis_jar
-download_wildfly
+#install_java
+#install_ant
+#download_axis_jar
+#download_wildfly
 install_wildfly
 compile_i2b2core
-run_wildfly
+#run_wildfly
 
