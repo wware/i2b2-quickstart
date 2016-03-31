@@ -1,64 +1,98 @@
 
 
+JBOSS_HOME="$PWD/jboss-as-7.1.1.Final"
+JAVA_HOME="$PWD/jdk1.7.0_51"
+
+
 AXIS_FILE=axis2-1.6.2-war.zip
 JDK_FILE=jdk-7u51-linux-x64.tar.gz
 ANT_FILE=apache-ant-1.9.6-bin.tar.bz2
+JBOSS_FILE=jboss-as-7.1.1.Final.tar.gz
 
 PWD=$(pwd)
 BASE=$PWD
-COM_DIR="$PWD/server-common"
 ANT="$PWD/apache-ant-1.9.6/bin/ant"
 alias ant=$ANT
 
 JAVA="$PWD/jdk1.7.0_51/bin/java"
-export  JAVA_HOME="$PWD/jdk1.7.0_51"
 alias java="$JAVA"
 
-JBOSS_FILE=jboss-as-7.1.1.Final.tar.gz
-export  JBOSS_HOME="$PWD/jboss-as-7.1.1.Final"
 
+#check if the home directories are found as specified by user, or use default dirs
+[ -d $JAVA_HOME] || JAVA_HOME=$PWD/${JDK_FILE/\.tar\.gz/}
+[ -d $JBOSS_HOME] || JBOSS_HOME=$PWD/${JBOSS_FILE/\.tar\.gz/}
+[ -d $ANT_HOME] || ANT_HOME=$PWD/${ANT_FILE/\.tar\.gz/}
+
+echo ">>JBOSS_HOME:$JBOSS_HOME"
+
+check_homes_for_install(){
+
+	[ -d $JAVA_HOME ] && echo "found JAVA_HOME:$JAVA_HOME"|| install_java
+	[ -d $JBOSS_HOME ] && echo "found JBOSS_HOME:$JBOSS_HOME"|| download_wildfly && install_wildfly	
+
+	exit
+}
+ 
 
 install_java(){
+	echo "installing java"
+	cd $BASE/packages
 	if [ -f $JDK_FILE ]
 	then echo "FOUND $JDK_FILE" 
 	else
 		curl --create-dirs -L --cookie "oraclelicense=accept-securebackup-cookie; gpw_e24=http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html" http://download.oracle.com/otn-pub/java/jdk/7u51-b13/$JDK_FILE -o $JDK_FILE
-		tar -xvzf $JDK_FILE
+	fi
+
+	cd $BASE	
+	if [ -f $BASE/packages/$JDK_FILE ]; then echo "found jdk file";
+		tar -xvzf $BASE/packages/$JDK_FILE
+	else 
+		echo "ERROR: could not find: $BASE/packages/$JDK_FILE" 1>&2
+		exit 75;
 	fi
 }
 
 install_ant(){
+	cd $BASE/packages
 	if [ -f $ANT_FILE ]
 	then echo "Found $ANT_FILE"
 	else
 		wget http://apache.mirrors.ionfish.org//ant/binaries/$ANT_FILE
-		tar -xvjf $ANT_FILE 
+		cd $BASE
+		tar -xvjf $BASE/packages/$ANT_FILE 
+		
 	fi
+	cd $BASE
 }
 
 
 download_axis_jar(){
+	cd $BASE/packages
 	if [ -f $AXIS_FILE ]
 	then echo ""
 	else
 		wget https://www.i2b2.org/software/projects/installer/$AXIS_FILE	
-	fi	
-	if [ -d axis ]; then echo "found axis dir";
+	fi
+	cd $BASE	
+	if [ -d $BASE/packages/axis ]; then echo "found axis dir";
 	else	
 		mkdir axis
 		cd axis
 		echo "AF:$AXIS_FILE"
-		/usr/bin/unzip ../$AXIS_FILE
+		unzip $BASE/packages/$AXIS_FILE
 		cp  axis2.war axis2.zip
 	fi
+	cd $BASE
 }
 
 download_wildfly(){
+	cd $BASE/packages
 	if [ -f $JBOSS_FILE ]
 	then echo "FOUND $JBOSS_FILE"
 	else
 		wget http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/$JBOSS_FILE
 	fi
+	cd $BASE
 }
 
 install_wildfly(){
@@ -66,7 +100,7 @@ install_wildfly(){
 	if [ -d $JBOSS_HOME ]
 	then echo "FOUND $JBOSS_HOME"
 	else
-		tar -xvzf $JBOSS_FILE
+		tar -xvzf $BASE/packages/$JBOSS_FILE
 		mkdir -p $JBOSS_HOME/standalone/deployments/i2b2.war
 
 		cd "$JBOSS_HOME/standalone/deployments/i2b2.war"
@@ -217,12 +251,13 @@ run_wildfly(){
 }
 
 
+check_homes_for_install
 #install_java
 #install_ant
 #download_axis_jar
 #download_wildfly
 
-create_tables_and_load_data_postgres
+#create_tables_and_load_data_postgres
 #install_wildfly
 #compile_i2b2core
 #run_wildfly
