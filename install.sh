@@ -144,11 +144,16 @@ ignore(){
 	exit;
 }
 
+create_tables_and_load_data_postgres(){
+	source scripts/postgres/load_data.sh /home/ec2-user/i2b2-install
+}
+
 compile_i2b2core(){
 	local BASE="/home/ec2-user/i2b2-install"
 	local BASE_CORE="$BASE/unzipped_packages/i2b2-core-server-master/"
-	local CONF_DIR=$BASE/config
-	
+	local CONF_DIR=$BASE/conf
+	local DB=postgres	
+
 	local TAR_DIR="$BASE_CORE/edu.harvard.i2b2.server-common"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
@@ -160,7 +165,7 @@ compile_i2b2core(){
 	local TAR_DIR="$BASE_CORE/edu.harvard.i2b2.${CELL_NAME}"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
+	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/$DB/* etc/jboss/
 	ant -f master_build.xml clean build-all deploy
 
 	#etc/jboss/*-ds.xml dataSourceconfig files are finally placed into deployment dir
@@ -175,7 +180,7 @@ compile_i2b2core(){
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 	echo "edu.harvard.i2b2.ontology.applicationdir=$JBOSS_HOME/standalone/configuration/ontologyapp" >> "$TAR_DIR/etc/spring/ontology_application_directory.properties"
-	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
+	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/$DB/* etc/jboss/
 	ant -f master_build.xml clean build-all deploy
 
 
@@ -187,7 +192,7 @@ compile_i2b2core(){
 	export TAR_DIR="$BASE_CORE/edu.harvard.i2b2.${CELL_NAME}"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
+	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/$DB/* etc/jboss/
 	echo "edu.harvard.i2b2.crc.applicationdir=$JBOSS_HOME/standalone/configuration/crcapp" >> "$TAR_DIR/etc/spring/crc_application_directory.properties"
 	ant -f master_build.xml clean build-all deploy
 
@@ -199,7 +204,7 @@ compile_i2b2core(){
 	export TAR_DIR="$BASE_CORE/edu.harvard.i2b2.${CELL_NAME}"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
-	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/* etc/jboss/
+	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/$DB/* etc/jboss/
 	echo "edu.harvard.i2b2.workplace.applicationdir=$JBOSS_HOME/standalone/configuration/workplaceapp" >> "$TAR_DIR/etc/spring/workplace_application_directory.properties"
 	ant -f master_build.xml clean build-all deploy
 
@@ -216,8 +221,10 @@ run_wildfly(){
 #install_ant
 #download_axis_jar
 #download_wildfly
-install_wildfly
-compile_i2b2core
+
+create_tables_and_load_data_postgres
+#install_wildfly
+#compile_i2b2core
 #run_wildfly
 
 #change path to cells in the hive after logging in as admin
