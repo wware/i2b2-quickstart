@@ -27,6 +27,7 @@ alias ant=$ANT_HOME/bin/ant
 alias JAVA="$JAVA_HOME/bin/java"
 
 echo ">>JBOSS_HOME:$JBOSS_HOME"
+[ -d $BASE/packages ] || mkdir -p $BASE/packages
 
 check_homes_for_install(){
 	[ -d $LOCAL ] || mkdir $LOCAL	
@@ -37,6 +38,13 @@ check_homes_for_install(){
 	[ -d $JBOSS_HOME ] && echo "found JBOSS_HOME:$JBOSS_HOME"|| download_wildfly && install_wildfly	
 }
  
+download_i2b2_source(){
+	cd $BASE/packages
+	for x in i2b2-webclient i2b2-core-server i2b2-data; do
+	 echo " downloading $x"
+	[ -f  $x.zip ] || wget -v https://github.com/i2b2/$x/archive/master.zip -O $x.zip
+	done
+}
 
 install_java(){
 	echo "installing java"
@@ -235,6 +243,7 @@ run_wildfly(){
 }
 
 
+download_i2b2_source
 check_homes_for_install
 
 #create_tables_and_load_data_postgres
