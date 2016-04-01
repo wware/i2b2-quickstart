@@ -24,7 +24,9 @@ JBOSS_FILE=jboss-as-7.1.1.Final.tar.gz
 [ -d $AXIS_HOME ] || AXIS_HOME=$LOCAL/axis
 
 alias ant=$ANT_HOME/bin/ant
-alias JAVA="$JAVA_HOME/bin/java"
+alias java="$JAVA_HOME/bin/java"
+
+export JAVA_HOME=$JAVA_HOME
 
 echo ">>JBOSS_HOME:$JBOSS_HOME"
 [ -d $BASE/packages ] || mkdir -p $BASE/packages
@@ -43,6 +45,16 @@ download_i2b2_source(){
 	for x in i2b2-webclient i2b2-core-server i2b2-data; do
 	 echo " downloading $x"
 	[ -f  $x.zip ] || wget -v https://github.com/i2b2/$x/archive/master.zip -O $x.zip
+	done
+}
+
+unzip_i2b2core(){
+	[ -d $BASE/unzipped_packages ] || mkdir $BASE/unzipped_packages
+	cd $BASE/unzipped_packages
+	for x in $(ls ../packages/i2b2*.zip | xargs -n 1 basename); do 
+		f=${x/\.zip/-master}
+		echo "unzipping $x from $f";
+		 [ -d $f ] || unzip ../packages/$x
 	done
 }
 
@@ -169,11 +181,6 @@ create_tables_and_load_data_postgres(){
 	source scripts/postgres/load_data.sh /home/ec2-user/i2b2-install
 }
 
-unzip_i2b2core(){
-	mkdir $BASE/unzipped_packages
-	cd $BASE/unzipped_packages
-	unzip ../packages/i2b2*.zip
-}
 
 compile_i2b2core(){
 	local BASE_CORE="$BASE/unzipped_packages/i2b2-core-server-master/"
@@ -244,10 +251,10 @@ run_wildfly(){
 
 
 download_i2b2_source
+unzip_i2b2core
 check_homes_for_install
 
 #create_tables_and_load_data_postgres
-unzip_i2b2core
 compile_i2b2core
 run_wildfly
 
