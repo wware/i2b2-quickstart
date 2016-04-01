@@ -3,7 +3,7 @@
 
 BASE=$1
 
-#sudo yum -y install git php perl
+sudo yum -y install git php perl wget zip httpd 
 
 install_postgres(){
 	if [ -d /var/lib/pgsql94/data/ ]

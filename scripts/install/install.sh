@@ -250,12 +250,13 @@ run_wildfly(){
 }
 
 
-download_i2b2_source
-unzip_i2b2core
-check_homes_for_install
+#download_i2b2_source
+#unzip_i2b2core
+#exit
+#check_homes_for_install
 
 #create_tables_and_load_data_postgres
-compile_i2b2core
-run_wildfly
+#compile_i2b2core
+#run_wildfly
 
 #change path to cells in the hive after logging in as admin
