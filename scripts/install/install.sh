@@ -11,6 +11,7 @@ AXIS_HOME=$LOCAL/axis
 ANT_HOME=$LOCAL/ant
 ##########
 
+echo "in INSTALL FILE PWD:$PWD"
 
 AXIS_FILE=axis2-1.6.2-war.zip
 JDK_FILE=jdk-7u51-linux-x64.tar.gz
@@ -41,7 +42,8 @@ check_homes_for_install(){
 }
  
 download_i2b2_source(){
-	cd $BASE/packages
+	BASE=$1
+	cd $BASE/packages;
 	for x in i2b2-webclient i2b2-core-server i2b2-data; do
 	 echo " downloading $x"
 	[ -f  $x.zip ] || wget -v https://github.com/i2b2/$x/archive/master.zip -O $x.zip
@@ -139,46 +141,6 @@ install_wildfly(){
 		sed -i -e s/port-offset:0/port-offset:1010/  "$JBOSS_HOME/standalone/configuration/standalone.xml"
 
 	fi
-}
-
-
-
-ignore(){	
-	local BASE="/home/ec2-user/i2b2-install"
-	local BASE_CORE=$BASE/unzipped_packages/i2b2-core-server-master/
-	local CONF_DATA=$BASE/data_config
-	cd $BASE_CORE
-
-	echo "PWD:$PWD"
-	cd Crcdata
-	mv data_build.xml build.xml
-	cp $CONF_DATA/crc/db.properties db.properties
-
-	cd ../Hivedata
-	cp $CONF_DATA/hive/db.properties db.properties
-	mv data_build.xml build.xml
-
-	cd ../Imdata
-	mv data_build.xml build.xml
-	cp $CONF_DATA/data_config/im/db.properties db.properties
-
-	cd ../Metadata
-	mv data_build.xml build.xml
-	cp $CONF_DATA/meta/db.properties db.properties
-
-	cd ../Pmdata
-	mv data_build.xml build.xml
-	cp $CONF_DATA/pm/db.properties db.properties
-
-	cd ../Workdata
-	mv data_build.xml build.xml
-	cp $CONF_DATA/work_place/db.properties db.properties
-
-	exit;
-}
-
-create_tables_and_load_data_postgres(){
-	source scripts/postgres/load_data.sh /home/ec2-user/i2b2-install
 }
 
 

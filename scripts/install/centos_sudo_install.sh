@@ -6,14 +6,14 @@ BASE=$1
 sudo yum -y install git php perl wget zip httpd 
 
 install_postgres(){
-	if [ -d /var/lib/pgsql94/data/ ]
+	if [ -d /var/lib/pgsql/9.4/data/ ]
 	then echo "postgres already installed"
 	else
 		sudo yum install http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
-		sudo yum install yum install postgresql94-server postgresql94-contrib
-
+		sudo yum install -y postgresql94-contrib  postgresql94-server 
 		sudo rm -rf /var/lib/pgsql/9.4/
-		service postgresql-9.4 initdb
+		sudo mkdir /var/lib/pgsql/9.4/
+		sudo /usr/pgsql-9.4/bin/postgresql94-setup initdb 
 		sudo chkconfig postgresql-9.4 on 
 		sudo cp conf/postgresql/pg_hba.conf  /var/lib/pgsql/9.4/data/
 		sudo service postgresql-9.4 start
@@ -21,10 +21,16 @@ install_postgres(){
 	fi
 }
 
-install_httpd(){		
-		cp conf/httpd/httpd.conf /etc/httpd/conf/
-		sudo chkconfig httpd on 
-		sudo service httpd start
+install_httpd(){
+		sudo yum -y install httpd
+		if [ -f /etc/httpd/conf.d/i2b2_proxy.conf ]; then
+			echo "httpd already installed"
+		else
+			echo "ProxyPass /i2b2/ http://localhost:9090/i2b2/" > /etc/httpd/conf.d/i2b2_proxy.conf		
+			echo "ProxyPassReverse /i2b2/ http://localhost:9090/i2b2/" > /etc/httpd/conf.d/i2b2_proxy.conf		
+			sudo chkconfig httpd on 
+			sudo service httpd start
+		fi
 }
 
 load_demo_data(){
@@ -71,8 +77,12 @@ load_demo_data(){
 	cat grant_privileges.sql |psql -U postgres i2b2
 }
 
-install_webclient(){
+install_i2b2webclient(){
+	BASE=$1
 	BASE_CORE=$BASE/unzipped_packages
+	echo "BASE_CORE:$BASE_CORE"
+	[ -d $BASE_CORE/i2b2-webclient-master/ ]|| echo " webclient source not found"  
+	[ -d $BASE_CORE/i2b2-webclient-master/ ]||  exit 
 
 	if [ -d /var/www/html/webclient ]
 	then echo "webclient folder already exists"
@@ -89,8 +99,7 @@ install_webclient(){
 #
 #find -L . -type f -print | xargs sed -i 's/9090/9090/g'
 }
-#load_demo_data
-install_webclient
+#install_httpd
+#install_webclient
 #install_postgres
-install_httpd
-install_webclient
+#load_demo_data
