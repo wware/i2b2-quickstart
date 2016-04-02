@@ -32,6 +32,10 @@ export JAVA_HOME=$JAVA_HOME
 echo ">>JBOSS_HOME:$JBOSS_HOME"
 [ -d $BASE/packages ] || mkdir -p $BASE/packages
 
+echo ">>>ran config"
+
+
+
 check_homes_for_install(){
 	[ -d $LOCAL ] || mkdir $LOCAL	
 
@@ -145,13 +149,14 @@ install_wildfly(){
 
 
 compile_i2b2core(){
-	local BASE_CORE="$BASE/unzipped_packages/i2b2-core-server-master/"
+	local BASE_CORE="$BASE/unzipped_packages/i2b2-core-server-master"
 	local CONF_DIR=$BASE/conf
 	local DB=postgres	
 
 	local TAR_DIR="$BASE_CORE/edu.harvard.i2b2.server-common"
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
+	export PATH="$PATH:$ANT_HOME/bin/:$JAVA_HOME/bin:"
 	ant clean dist deploy jboss_pre_deployment_setup
 
 	echo "PWD:$PWD"
@@ -210,6 +215,10 @@ run_wildfly(){
 #	cd $JBOSS_HOME
 	sh $JBOSS_HOME/bin/standalone.sh
 }
+
+check_homes_for_install $(pwd)
+compile_i2b2core $(pwd)
+run_wildfly $(pwd)
 
 
 #download_i2b2_source

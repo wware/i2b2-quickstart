@@ -14,7 +14,7 @@ _
 
 BASE=$(pwd)
 source scripts/install/centos_sudo_install.sh
-#install_httpd
+install_httpd
 install_i2b2webclient $(pwd)
 
 #install_i2b2admin
@@ -27,8 +27,8 @@ if psql -U postgres -lqt | cut -d \| -f 1 |grep "i2b2";then
 else
 	source scripts/postgres/load_data.sh $(pwd)
 fi
+_
+
+$RUNAS bash << _
 source scripts/install/install.sh
-check_homes_for_install
-compile_i2b2core
-run_wildfly
 _
