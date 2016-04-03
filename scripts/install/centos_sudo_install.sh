@@ -9,10 +9,11 @@ install_postgres(){
 	if [ -d /var/lib/pgsql/9.4/data/ ]
 	then echo "postgres already installed"
 	else
-		sudo yum install http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+		sudo yum install -y http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
 		sudo yum install -y postgresql94-contrib  postgresql94-server 
 		sudo rm -rf /var/lib/pgsql/9.4/
 		sudo mkdir /var/lib/pgsql/9.4/
+		chown -R postgres:postgres /var/lib/pgsql/9.4/
 		sudo /usr/pgsql-9.4/bin/postgresql94-setup initdb 
 		sudo chkconfig postgresql-9.4 on 
 		sudo cp conf/postgresql/pg_hba.conf  /var/lib/pgsql/9.4/data/
@@ -91,15 +92,13 @@ install_i2b2webclient(){
 	else 
 		mkdir /var/www/html/admin
 		mkdir /var/www/html/webclient/
-		cp -rv $BASE_CORE/i2b2-admin-master/* /var/www/html/admin/*
+		cp -rv $BASE_CORE/admin/* /var/www/html/admin/
 		cp -rv $BASE_CORE/i2b2-webclient-master/* /var/www/html/webclient/
 		cp conf/webclient/i2b2_config_data.js /var/www/html/webclient/
 		cp conf/admin/i2b2_config_data.js /var/www/html/admin/
-
+		sed -i -- "s/127.0.0.1/$IP/" /var/www/html/webclient/i2b2_config_data.js
+		
 	fi
-	#cd "$BASE"
-#
-#find -L . -type f -print | xargs sed -i 's/9090/9090/g'
 }
 #install_httpd
 #install_webclient

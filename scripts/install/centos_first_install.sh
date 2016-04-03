@@ -1,10 +1,17 @@
 
+IP=$2
 
-yum -y install wget unzip bzip2 
+if [[ $IP ]];then
+	IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
+fi
+
+yum -y install git wget unzip bzip2 
 
 sudo -u nobody bash -c : && RUNAS="sudo -u $SUDO_USER"
 
 $RUNAS bash << _
+git clone https://github.com/waghsk/i2b2-install
+cd i2b2-install
 source scripts/install/install.sh
 download_i2b2_source $(pwd)
 unzip_i2b2core $(pwd)
@@ -14,7 +21,7 @@ _
 BASE=$(pwd)
 source scripts/install/centos_sudo_install.sh
 install_httpd
-install_i2b2webclient $(pwd)
+install_i2b2webclient $(pwd) $IP
 
 #install_i2b2admin
 install_postgres
