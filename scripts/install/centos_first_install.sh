@@ -1,8 +1,6 @@
 
 
-yum -y install wget unzip 
-
-
+yum -y install wget unzip bzip2 
 
 sudo -u nobody bash -c : && RUNAS="sudo -u $SUDO_USER"
 
@@ -11,6 +9,7 @@ source scripts/install/install.sh
 download_i2b2_source $(pwd)
 unzip_i2b2core $(pwd)
 _
+
 
 BASE=$(pwd)
 source scripts/install/centos_sudo_install.sh
@@ -31,4 +30,7 @@ _
 
 $RUNAS bash << _
 source scripts/install/install.sh
+check_homes_for_install $(pwd)
+compile_i2b2core $(pwd)
+run_wildfly $(pwd)
 _

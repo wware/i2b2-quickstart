@@ -216,9 +216,9 @@ run_wildfly(){
 	sh $JBOSS_HOME/bin/standalone.sh
 }
 
-check_homes_for_install $(pwd)
-compile_i2b2core $(pwd)
-run_wildfly $(pwd)
+#check_homes_for_install $(pwd)
+#compile_i2b2core $(pwd)
+#run_wildfly $(pwd)
 
 
 #download_i2b2_source
