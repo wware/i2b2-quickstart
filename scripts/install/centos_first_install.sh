@@ -10,7 +10,9 @@ else
 fi
 
 sudo yum -y install tar sed bzip2 git php perl wget zip unzip httpd
-
+setenforce 0
+service iptables stop
+ 
 sudo -u nobody bash -c : && RUNAS="sudo -u $SUDO_USER"
 
 $RUNAS bash << _

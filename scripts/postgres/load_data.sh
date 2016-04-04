@@ -30,7 +30,7 @@ load_demo_data(){
 	cd ../Pmdata/
 	for x in "create_postgresql_i2b2pm_tables.sql" "create_postgresql_triggers.sql"
 	do echo $x;cat scripts/$x|psql -U i2b2pm i2b2;done;
-	cat scripts/pm_access_insert_data.sql| sed  "s/localhost:9090/$IP/" |psql -U i2b2pm i2b2;
+	cat scripts/pm_access_insert_data.sql| sed  -e "s/localhost:9090/$IP/" |psql -U i2b2pm i2b2;
 
 	#echo "grant all privileges on all tables in schema i2b2hive to i2b2hive;"|psql -U postgres i2b2
 
