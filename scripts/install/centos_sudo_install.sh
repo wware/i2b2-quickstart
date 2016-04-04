@@ -14,7 +14,7 @@ install_postgres(){
 		sudo rm -rf /var/lib/pgsql/9.4/
 		sudo mkdir /var/lib/pgsql/9.4/
 		chown -R postgres:postgres /var/lib/pgsql/9.4/
-		sudo /usr/pgsql-9.4/bin/postgresql94-setup initdb 
+		sudo [ -f /usr/pgsql-9.4/bin/postgresql94-setup ] && sudo /usr/pgsql-9.4/bin/postgresql94-setup initdb || sudo service postgresql-9.4 initdb
 		sudo chkconfig postgresql-9.4 on 
 		sudo cp conf/postgresql/pg_hba.conf  /var/lib/pgsql/9.4/data/
 		sudo service postgresql-9.4 start
