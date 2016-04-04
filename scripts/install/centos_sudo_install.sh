@@ -3,7 +3,7 @@
 
 BASE=$1
 
-sudo yum -y install git php perl wget zip httpd 
+#sudo yum -y install git php perl wget zip unzip httpd 
 
 install_postgres(){
 	if [ -d /var/lib/pgsql/9.4/data/ ]
@@ -23,7 +23,6 @@ install_postgres(){
 }
 
 install_httpd(){
-		sudo yum -y install httpd
 		if [ -f /etc/httpd/conf.d/i2b2_proxy.conf ]; then
 			echo "httpd already installed"
 		else
@@ -82,6 +81,7 @@ load_demo_data(){
 
 install_i2b2webclient(){
 	BASE=$1
+	IP=$2
 	BASE_CORE=$BASE/unzipped_packages
 	echo "BASE_CORE:$BASE_CORE"
 	[ -d $BASE_CORE/i2b2-webclient-master/ ]|| echo " webclient source not found"  
@@ -92,11 +92,12 @@ install_i2b2webclient(){
 	else 
 		mkdir /var/www/html/admin
 		mkdir /var/www/html/webclient/
-		cp -rv $BASE_CORE/admin/* /var/www/html/admin/
+		cp -rv $BASE_CORE/i2b2-webclient-master/* /var/www/html/admin/
 		cp -rv $BASE_CORE/i2b2-webclient-master/* /var/www/html/webclient/
 		cp conf/webclient/i2b2_config_data.js /var/www/html/webclient/
 		cp conf/admin/i2b2_config_data.js /var/www/html/admin/
 		sed -i -- "s/127.0.0.1/$IP/" /var/www/html/webclient/i2b2_config_data.js
+		sed -i -- "s/127.0.0.1/$IP/" /var/www/html/admin/i2b2_config_data.js
 		
 	fi
 }
