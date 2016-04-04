@@ -56,5 +56,5 @@ create_db_schema(){
 	cat $1/scripts/postgres/create_schemas.sql|psql -U postgres 
 }
 
-create_db_schema $1;
-load_demo_data $1;
+#create_db_schema $1;
+#load_demo_data $1;
