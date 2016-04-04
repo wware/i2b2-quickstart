@@ -1,9 +1,12 @@
 
 load_demo_data(){
 
+
 	#BASE="/home/ec2-user/i2b2-install"
 	BASE=$1
 	DATA_BASE="$BASE/unzipped_packages/i2b2-data-master"
+
+	IP=$2
 
 	cd "$DATA_BASE/edu.harvard.i2b2.data/Release_1-7/NewInstall/Crcdata/"
 	echo "pwd:$PWD"
@@ -21,13 +24,13 @@ load_demo_data(){
 	mkdir ~/tmp
 	for x in "create_postgresql_i2b2hive_tables.sql" "work_db_lookup_postgresql_insert_data.sql" "ont_db_lookup_postgresql_insert_data.sql" "im_db_lookup_postgresql_insert_data.sql" "crc_db_lookup_postgresql_insert_data.sql"
 	do
-	cat scripts/$x|psql -U i2b2hive i2b2 ;
+	cat scripts/$x|sql -U i2b2hive i2b2 ;
 	done;
 
 	cd ../Pmdata/
 	for x in "create_postgresql_i2b2pm_tables.sql" "create_postgresql_triggers.sql"
 	do echo $x;cat scripts/$x|psql -U i2b2pm i2b2;done;
-	cat scripts/pm_access_insert_data.sql|psql -U i2b2pm i2b2;
+	cat scripts/pm_access_insert_data.sql| sed  "s/localhost:9090/$IP/" |psql -U i2b2pm i2b2;
 
 	#echo "grant all privileges on all tables in schema i2b2hive to i2b2hive;"|psql -U postgres i2b2
 
