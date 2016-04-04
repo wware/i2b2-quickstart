@@ -8,8 +8,10 @@ load_demo_data(){
 
 	IP=$2
 
+
+
 	cd "$DATA_BASE/edu.harvard.i2b2.data/Release_1-7/NewInstall/Crcdata/"
-	echo "pwd:$PWD"
+	echo ">>>>>pwd:$PWD IP:$IP"
 	local POPTS="dbname=i2b2 options=--search_path='i2b2demodata'"
 	
 	#(echo "set schema 'i2b2demodata';";cat scripts/crc_create_datamart_postgresql.sql)|psql -U i2b2demodata i2b2
