@@ -1,5 +1,5 @@
 
-IP=$2
+IP=$1
 
 
 if [[ $IP ]];then
