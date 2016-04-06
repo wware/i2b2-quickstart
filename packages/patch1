@@ -1,0 +1,371 @@
+diff -ruN old/edu.harvard.i2b2.crc/build.properties new/edu.harvard.i2b2.crc/build.properties
+--- old/edu.harvard.i2b2.crc/build.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.crc/build.properties	2016-04-06 17:01:29.977137639 -0400
+@@ -1,7 +1,7 @@
+ #Ant build property file
+ 
+ ## TOMCAT HOME
+-jboss.home=/opt/jboss-as-7.1.1.Final
++jboss.home=/opt/wildfly-10.0.0.Final
+ axis2.war.name=i2b2.war
+ 
+ #Test files home
+diff -ruN old/edu.harvard.i2b2.crc/etc/spring/crc_application_directory.properties new/edu.harvard.i2b2.crc/etc/spring/crc_application_directory.properties
+--- old/edu.harvard.i2b2.crc/etc/spring/crc_application_directory.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.crc/etc/spring/crc_application_directory.properties	2016-04-06 17:01:29.985137639 -0400
+@@ -3,4 +3,4 @@
+ ## $Id: crc_application_directory.properties,v 1.3 2008/09/12 15:31:34 lcp5 Exp $					
+ ###############################################
+ 
+-edu.harvard.i2b2.crc.applicationdir=/opt/jboss-as-7.1.1.Final/standalone/configuration/crcapp
++edu.harvard.i2b2.crc.applicationdir=/opt/wildfly-10.0.0.Final/standalone/configuration/crcapp
+diff -ruN old/edu.harvard.i2b2.crc/src/server/edu/harvard/i2b2/crc/dao/pdo/input/PatientListTypeHandler.java new/edu.harvard.i2b2.crc/src/server/edu/harvard/i2b2/crc/dao/pdo/input/PatientListTypeHandler.java
+--- old/edu.harvard.i2b2.crc/src/server/edu/harvard/i2b2/crc/dao/pdo/input/PatientListTypeHandler.java	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.crc/src/server/edu/harvard/i2b2/crc/dao/pdo/input/PatientListTypeHandler.java	2016-04-06 17:01:30.000137640 -0400
+@@ -191,7 +191,15 @@
+ 			// this.getEnumerationList();
+ 			String tempTableName = this.getTempTableName();
+ 
+-			sqlString = " select char_param1 from " + tempTableName + "  ";
++			if (dataSourceLookup.getServerType().equalsIgnoreCase(
++					DAOFactoryHelper.POSTGRESQL))
++			{
++			sqlString = " select cast(char_param1 as integer) from " + tempTableName + "  ";
++			}
++			else {
++				sqlString = " select char_param1 from " + tempTableName + "  ";
++
++			}
+ 		} else if (patientListType.getEntirePatientSet() != null) {
+ 			// by default get first 100 rows
+ 			if ((minIndex == 0) && (maxIndex == 0)) {
+@@ -339,6 +347,7 @@
+ 
+ 		String tempTableName = this.getTempTableName();
+ 		deleteTempTableFlag = true;
++		deleteTempTable(conn);
+ 		// create temp table
+ 		java.sql.Statement tempStmt = conn.createStatement();
+ 		if (dataSourceLookup.getServerType().equalsIgnoreCase(
+@@ -347,6 +356,13 @@
+ 					+ getTempTableName()
+ 					+ " (set_index int, char_param1 varchar(100) )";
+ 			tempStmt.executeUpdate(createTempInputListTable);
++		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
++				DAOFactoryHelper.POSTGRESQL))
++		{
++			String createTempInputListTable = "create temp table "
++					+ getTempTableName()
++					+ " (set_index int, char_param1 varchar(100) )";
++			tempStmt.executeUpdate(createTempInputListTable);
+ 		}
+ 		int i = 0, j = 1;
+ 
+@@ -405,7 +421,7 @@
+ 						"delete " + getTempTableName());
+ 			}
+ 		} catch (SQLException sqle) {
+-			throw sqle;
++			//throw sqle;
+ 		} finally {
+ 			try {
+ 				deleteStmt.close();
+@@ -422,6 +438,10 @@
+ 				DAOFactoryHelper.ORACLE)) {
+ 			tempTableName = this.getDbSchemaName()
+ 					+ FactRelatedQueryHandler.TEMP_PARAM_TABLE;
++		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
++				DAOFactoryHelper.POSTGRESQL)) {
++			tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
++			
+ 		} else {
+ 			tempTableName = this.getDbSchemaName()
+ 					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
+diff -ruN old/edu.harvard.i2b2.crc/src/server/edu/harvard/i2b2/crc/dao/pdo/PageTotalDao.java new/edu.harvard.i2b2.crc/src/server/edu/harvard/i2b2/crc/dao/pdo/PageTotalDao.java
+--- old/edu.harvard.i2b2.crc/src/server/edu/harvard/i2b2/crc/dao/pdo/PageTotalDao.java	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.crc/src/server/edu/harvard/i2b2/crc/dao/pdo/PageTotalDao.java	2016-04-06 17:01:30.002137640 -0400
+@@ -244,6 +244,7 @@
+ 	private void upLoadTempTableForMin(Connection conn,
+ 			IInputOptionListHandler inputOptionListHandler) throws SQLException {
+ 		List<String> enumList = inputOptionListHandler.getEnumerationList();
++		deleteTempTable(conn);
+ 		// create temp table
+ 		java.sql.Statement tempStmt = conn.createStatement();
+ 		String createTempInputListTable = "create table "
+diff -ruN old/edu.harvard.i2b2.crc/src/test/edu/harvard/i2b2/crc/axis2/SetfinderQueryTest.java new/edu.harvard.i2b2.crc/src/test/edu/harvard/i2b2/crc/axis2/SetfinderQueryTest.java
+--- old/edu.harvard.i2b2.crc/src/test/edu/harvard/i2b2/crc/axis2/SetfinderQueryTest.java	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.crc/src/test/edu/harvard/i2b2/crc/axis2/SetfinderQueryTest.java	2016-04-06 17:01:30.052137643 -0400
+@@ -4406,8 +4406,8 @@
+ 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
+ 					if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
+ 					{
+-						assertTrue("age is to high", 8 >= results.getSetSize());
+-						  assertTrue("age is to low",  6  <= results.getSetSize());
++						assertTrue("age is to high", 6 >= results.getSetSize());
++						  assertTrue("age is to low",  4  <= results.getSetSize());
+ 					}
+ 					else
+ 					{
+@@ -4471,8 +4471,8 @@
+ 			{
+ 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
+ 				{
+-					assertTrue("age is to high", 8 >= results.getSetSize());
+-					  assertTrue("age is to low",  6  <= results.getSetSize());
++					assertTrue("age is to high", 6 >= results.getSetSize());
++					  assertTrue("age is to low",  4  <= results.getSetSize());
+ 				}
+ 				else
+ 				{
+@@ -4506,8 +4506,8 @@
+ 			{
+ 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
+ 				{
+-					assertTrue("age is to high", 8 >= results.getSetSize());
+-					  assertTrue("age is to low",  6  <= results.getSetSize());
++					assertTrue("age is to high", 6 >= results.getSetSize());
++					  assertTrue("age is to low",  4  <= results.getSetSize());
+ 				}
+ 				else
+ 				{
+diff -ruN old/edu.harvard.i2b2.fr/build.properties new/edu.harvard.i2b2.fr/build.properties
+--- old/edu.harvard.i2b2.fr/build.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.fr/build.properties	2016-04-06 17:01:30.094137645 -0400
+@@ -1,7 +1,7 @@
+ #Ant build property file
+ 
+ ##JBOSS HOME
+-jboss.home=/opt/jboss-as-7.1.1.Final
++jboss.home=/opt/wildfly-10.0.0.Final
+ axis2.war.name=i2b2.war
+ 
+ #Test files home
+diff -ruN old/edu.harvard.i2b2.fr/etc/spring/fr_application_directory.properties new/edu.harvard.i2b2.fr/etc/spring/fr_application_directory.properties
+--- old/edu.harvard.i2b2.fr/etc/spring/fr_application_directory.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.fr/etc/spring/fr_application_directory.properties	2016-04-06 17:01:30.098137645 -0400
+@@ -3,4 +3,4 @@
+ ## $Id: fr_application_directory.properties,v 1.3 2008/09/12 15:35:33 lcp5 Exp $					
+ ###############################################
+ 
+-edu.harvard.i2b2.fr.applicationdir=/opt/jboss-as-7.1.1.Final/standalone/configuration/frapp
++edu.harvard.i2b2.fr.applicationdir=/opt/wildfly-10.0.0.Final/standalone/configuration/frapp
+diff -ruN old/edu.harvard.i2b2.im/build.properties new/edu.harvard.i2b2.im/build.properties
+--- old/edu.harvard.i2b2.im/build.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.im/build.properties	2016-04-06 17:01:30.106137646 -0400
+@@ -1,7 +1,7 @@
+ #Ant build property file
+ 
+ ## JBOSS HOME
+-jboss.home=/opt/jboss-as-7.1.1.Final
++jboss.home=/opt/wildfly-10.0.0.Final
+ axis2.war.name=i2b2.war
+ 
+ report=test-reports
+diff -ruN old/edu.harvard.i2b2.im/etc/spring/im_application_directory.properties new/edu.harvard.i2b2.im/etc/spring/im_application_directory.properties
+--- old/edu.harvard.i2b2.im/etc/spring/im_application_directory.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.im/etc/spring/im_application_directory.properties	2016-04-06 17:01:30.109137646 -0400
+@@ -3,4 +3,4 @@
+ ## $Id: crc_application_directory.properties,v 1.3 2008/09/12 15:31:34 lcp5 Exp $					
+ ###############################################
+ 
+-edu.harvard.i2b2.im.applicationdir=/opt/jboss-as-7.1.1.Final/standalone/configuration/imapp
++edu.harvard.i2b2.im.applicationdir=/opt/wildfly-10.0.0.Final/standalone/configuration/imapp
+diff -ruN old/edu.harvard.i2b2.ontology/build.properties new/edu.harvard.i2b2.ontology/build.properties
+--- old/edu.harvard.i2b2.ontology/build.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.ontology/build.properties	2016-04-06 17:01:30.119137646 -0400
+@@ -1,7 +1,7 @@
+ #Ant build property file
+ 
+ ## TOMCAT HOME
+-jboss.home=/opt/jboss-as-7.1.1.Final
++jboss.home=/opt/wildfly-10.0.0.Final
+ axis2.war.name=i2b2.war
+ 
+ report=test-reports
+diff -ruN old/edu.harvard.i2b2.ontology/etc/spring/ontology_application_directory.properties new/edu.harvard.i2b2.ontology/etc/spring/ontology_application_directory.properties
+--- old/edu.harvard.i2b2.ontology/etc/spring/ontology_application_directory.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.ontology/etc/spring/ontology_application_directory.properties	2016-04-06 17:01:30.139137648 -0400
+@@ -3,4 +3,4 @@
+ ## $Id: ontology_application_directory.properties,v 1.4 2008/09/03 18:44:38 lcp5 Exp $					
+ ###############################################
+ 
+-edu.harvard.i2b2.ontology.applicationdir=/opt/jboss-as-7.1.1.Final/standalone/configuration/ontologyapp
++edu.harvard.i2b2.ontology.applicationdir=/opt/wildfly-10.0.0.Final/standalone/configuration/ontologyapp
+diff -ruN "old/edu.harvard.i2b2.ontology/etc/xsd/ i2b2_rspdo_bindings.xjb" "new/edu.harvard.i2b2.ontology/etc/xsd/ i2b2_rspdo_bindings.xjb"
+--- "old/edu.harvard.i2b2.ontology/etc/xsd/ i2b2_rspdo_bindings.xjb"	1969-12-31 19:00:00.000000000 -0500
++++ "new/edu.harvard.i2b2.ontology/etc/xsd/ i2b2_rspdo_bindings.xjb"	2016-04-06 17:01:30.140137648 -0400
+@@ -0,0 +1,21 @@
++<jxb:bindings version="1.0"
++               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
++               xmlns:xs="http://www.w3.org/2001/XMLSchema">
++                
++    <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/ont/ONT_LITE_RESP.xsd" node="/xs:schema">
++        <jxb:schemaBindings > 
++	           <jxb:package name="edu.harvard.i2b2.ontology.datavo.vdo">
++	  	         <jxb:javadoc><![CDATA[<body>Package level 
++	  	 documentation for generated package primer.myPo.</body>]]>
++	  	         </jxb:javadoc>
++	  	     </jxb:package>
++	  	     <!-- 
++	  	     <jxb:nameXmlTransform>
++	  	         <jxb:elementName suffix="Element"/>
++	  	    </jxb:nameXmlTransform>
++	  	    -->
++    </jxb:schemaBindings>
++  </jxb:bindings>
++  
++<!-- schemaLocation="po.xsd" node="/xs:schema" -->
++</jxb:bindings> 
+\ No newline at end of file
+diff -ruN old/edu.harvard.i2b2.ontology/etc/xsd/i2b2_rspdo_bindings.xjb new/edu.harvard.i2b2.ontology/etc/xsd/i2b2_rspdo_bindings.xjb
+--- old/edu.harvard.i2b2.ontology/etc/xsd/i2b2_rspdo_bindings.xjb	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.ontology/etc/xsd/i2b2_rspdo_bindings.xjb	1969-12-31 19:00:00.000000000 -0500
+@@ -1,21 +0,0 @@
+-<jxb:bindings version="1.0"
+-               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+-               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+-                
+-    <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/ont/ONT_LITE_RESP.xsd" node="/xs:schema">
+-        <jxb:schemaBindings > 
+-	           <jxb:package name="edu.harvard.i2b2.ontology.datavo.vdo">
+-	  	         <jxb:javadoc><![CDATA[<body>Package level 
+-	  	 documentation for generated package primer.myPo.</body>]]>
+-	  	         </jxb:javadoc>
+-	  	     </jxb:package>
+-	  	     <!-- 
+-	  	     <jxb:nameXmlTransform>
+-	  	         <jxb:elementName suffix="Element"/>
+-	  	    </jxb:nameXmlTransform>
+-	  	    -->
+-    </jxb:schemaBindings>
+-  </jxb:bindings>
+-  
+-<!-- schemaLocation="po.xsd" node="/xs:schema" -->
+-</jxb:bindings> 
+\ No newline at end of file
+diff -ruN "old/edu.harvard.i2b2.ontology/etc/xsd_1.1/ i2b2_rspdo_bindings.xjb" "new/edu.harvard.i2b2.ontology/etc/xsd_1.1/ i2b2_rspdo_bindings.xjb"
+--- "old/edu.harvard.i2b2.ontology/etc/xsd_1.1/ i2b2_rspdo_bindings.xjb"	1969-12-31 19:00:00.000000000 -0500
++++ "new/edu.harvard.i2b2.ontology/etc/xsd_1.1/ i2b2_rspdo_bindings.xjb"	2016-04-06 17:01:30.141137648 -0400
+@@ -0,0 +1,21 @@
++<jxb:bindings version="1.0"
++               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
++               xmlns:xs="http://www.w3.org/2001/XMLSchema">
++                
++    <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/ont_1.1/ONT_RESP.xsd" node="/xs:schema">
++        <jxb:schemaBindings > 
++	           <jxb:package name="edu.harvard.i2b2.ontology.datavo.vdo">
++	  	         <jxb:javadoc><![CDATA[<body>Package level 
++	  	 documentation for generated package primer.myPo.</body>]]>
++	  	         </jxb:javadoc>
++	  	     </jxb:package>
++	  	     <!-- 
++	  	     <jxb:nameXmlTransform>
++	  	         <jxb:elementName suffix="Element"/>
++	  	    </jxb:nameXmlTransform>
++	  	    -->
++    </jxb:schemaBindings>
++  </jxb:bindings>
++  
++<!-- schemaLocation="po.xsd" node="/xs:schema" -->
++</jxb:bindings> 
+\ No newline at end of file
+diff -ruN old/edu.harvard.i2b2.ontology/etc/xsd_1.1/i2b2_rspdo_bindings.xjb new/edu.harvard.i2b2.ontology/etc/xsd_1.1/i2b2_rspdo_bindings.xjb
+--- old/edu.harvard.i2b2.ontology/etc/xsd_1.1/i2b2_rspdo_bindings.xjb	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.ontology/etc/xsd_1.1/i2b2_rspdo_bindings.xjb	1969-12-31 19:00:00.000000000 -0500
+@@ -1,21 +0,0 @@
+-<jxb:bindings version="1.0"
+-               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+-               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+-                
+-    <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/ont_1.1/ONT_RESP.xsd" node="/xs:schema">
+-        <jxb:schemaBindings > 
+-	           <jxb:package name="edu.harvard.i2b2.ontology.datavo.vdo">
+-	  	         <jxb:javadoc><![CDATA[<body>Package level 
+-	  	 documentation for generated package primer.myPo.</body>]]>
+-	  	         </jxb:javadoc>
+-	  	     </jxb:package>
+-	  	     <!-- 
+-	  	     <jxb:nameXmlTransform>
+-	  	         <jxb:elementName suffix="Element"/>
+-	  	    </jxb:nameXmlTransform>
+-	  	    -->
+-    </jxb:schemaBindings>
+-  </jxb:bindings>
+-  
+-<!-- schemaLocation="po.xsd" node="/xs:schema" -->
+-</jxb:bindings> 
+\ No newline at end of file
+diff -ruN old/edu.harvard.i2b2.pm/build.properties new/edu.harvard.i2b2.pm/build.properties
+--- old/edu.harvard.i2b2.pm/build.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.pm/build.properties	2016-04-06 17:01:30.156137649 -0400
+@@ -1,7 +1,7 @@
+ #Ant build property file
+ 
+ ## JBOSS HOME
+-jboss.home=/opt/jboss-as-7.1.1.Final
++jboss.home=/opt/wildfly-10.0.0.Final
+ axis2.war.name=i2b2.war
+ 
+ report=test-reports
+diff -ruN old/edu.harvard.i2b2.server-common/build.properties new/edu.harvard.i2b2.server-common/build.properties
+--- old/edu.harvard.i2b2.server-common/build.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.server-common/build.properties	2016-04-06 17:01:30.182137650 -0400
+@@ -1,7 +1,7 @@
+ #Ant build property file
+ 
+ ## JBOSS HOME
+-jboss.home=/opt/jboss-as-7.1.1.Final
++jboss.home=/opt/wildfly-10.0.0.Final
+ axis2.war.name=i2b2.war
+ bin.includes = lib/jdom/jdom.jar
+ bin.includes = lib/jdom/jdom-contrib.jar
+diff -ruN old/edu.harvard.i2b2.server-common/build.xml new/edu.harvard.i2b2.server-common/build.xml
+--- old/edu.harvard.i2b2.server-common/build.xml	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.server-common/build.xml	2016-04-06 17:01:30.182137650 -0400
+@@ -76,14 +76,16 @@
+ 		<!-- copy jar to jboss lib -->
+ 		<antcall target="copy_jdbc_jar" />
+ 		<antcall target="copy_app_jar" />
+-				
++		
++		<!--		
+ 		<echo> Copying axis2.xml to conf directory</echo>
+ 		<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/conf">
+ 			<fileset dir="${etc}/axis2">
+ 				<include name="axis2.xml" />
+ 			</fileset>
+ 		</copy>
+-		
++	  	-->
++	
+ 		<!-- copy endosed jar to jboss endorsed lib 
+ 		<antcall target="copy_endosed_jar" />
+ 		<echo> Copying axis2.xml to conf directory</echo>
+@@ -129,4 +131,4 @@
+ 		</copy>		
+ 		
+ 	</target>
+-</project>
+\ No newline at end of file
++</project>
+diff -ruN old/edu.harvard.i2b2.workplace/build.properties new/edu.harvard.i2b2.workplace/build.properties
+--- old/edu.harvard.i2b2.workplace/build.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.workplace/build.properties	2016-04-06 17:01:30.470137666 -0400
+@@ -1,7 +1,7 @@
+ #Ant build property file
+ 
+ ## JBOSS HOME
+-jboss.home=/opt/jboss-as-7.1.1.Final
++jboss.home=/opt/wildfly-10.0.0.Final
+ axis2.war.name=i2b2.war
+ 
+ report=test-reports
+diff -ruN old/edu.harvard.i2b2.workplace/etc/spring/workplace_application_directory.properties new/edu.harvard.i2b2.workplace/etc/spring/workplace_application_directory.properties
+--- old/edu.harvard.i2b2.workplace/etc/spring/workplace_application_directory.properties	2016-01-11 11:50:16.000000000 -0500
++++ new/edu.harvard.i2b2.workplace/etc/spring/workplace_application_directory.properties	2016-04-06 17:01:30.490137667 -0400
+@@ -3,4 +3,4 @@
+ ## $Id: workplace_application_directory.properties,v 1.3 2008/09/03 19:06:28 lcp5 Exp $					
+ ###############################################
+ 
+-edu.harvard.i2b2.workplace.applicationdir=/opt/jboss-as-7.1.1.Final/standalone/configuration/workplaceapp
++edu.harvard.i2b2.workplace.applicationdir=/opt/wildfly-10.0.0.Final/standalone/configuration/workplaceapp
