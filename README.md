@@ -1,9 +1,13 @@
 installs i2b2 hive and webclient on amazon webservice vm
 
+cd i2b2-install
+
 git clone https://github.com/waghsk/i2b2-install.git
 
 sudo sh scripts/install/centos_first_install.sh 2>&1|tee first.log
 
+To test installation see:
+http://ipaddress/webclient/
 
 #############
 
