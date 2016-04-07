@@ -63,8 +63,9 @@ unzip_i2b2core(){
 		echo "unzipping $x from $f";
 		 [ -d $f ] || unzip ../packages/$x
 	done
-	cd i2b2-core-server-master;
-	patch -p1 < ../../packages/patch_crc_PDOcall
+	
+	cd i2b2-core-server-master/edu.harvard.i2b2.crc/src/server;
+	patch -p1 < ../../../../../packages/patch_crc_PDOcall
 }
 
 install_java(){
