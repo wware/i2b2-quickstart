@@ -9,7 +9,7 @@ else
 	echo "IP:$IP"
 fi
 
-sudo yum -y install tar sed bzip2 git php perl wget zip unzip httpd
+sudo yum -y install tar sed bzip2 git php perl wget zip unzip httpd patch
 setenforce 0
 service iptables stop
  

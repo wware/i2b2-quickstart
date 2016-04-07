@@ -32,6 +32,7 @@ install_httpd(){
 			sudo chkconfig httpd on 
 			sudo service httpd start
 			sudo /usr/sbin/setsebool httpd_can_network_connect 1
+			sudo sed -i s/SELINUX=enforcing/SELINUX=disabled/ /etc/sysconfig/selinux 
 		fi
 }
 

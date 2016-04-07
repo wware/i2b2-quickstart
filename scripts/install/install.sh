@@ -49,6 +49,7 @@ download_i2b2_source(){
 	BASE=$1
 	cd $BASE/packages;
 	for x in i2b2-webclient i2b2-core-server i2b2-data; do
+	#for x in i2b2-webclient i2b2-data; do
 	 echo " downloading $x"
 	[ -f  $x.zip ] || wget -v https://github.com/i2b2/$x/archive/master.zip -O $x.zip
 	done
@@ -62,6 +63,8 @@ unzip_i2b2core(){
 		echo "unzipping $x from $f";
 		 [ -d $f ] || unzip ../packages/$x
 	done
+	cd i2b2-core-server-master;
+	patch -p1 < ../../packages/patch_crc_PDOcall
 }
 
 install_java(){
