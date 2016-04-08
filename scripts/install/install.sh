@@ -64,8 +64,18 @@ unzip_i2b2core(){
 		 [ -d $f ] || unzip ../packages/$x
 	done
 	
-	cd i2b2-core-server-master/edu.harvard.i2b2.crc/src/server;
-	patch -p1 < ../../../../../packages/patch_crc_PDOcall
+	CRC="i2b2-core-server-master/edu.harvard.i2b2.crc"
+
+	echo ">>PWD:$(pwd)"
+	if [ -f $CRC/patch_crc_PDOCall ];then
+		echo "PATCH is already applied"
+	else
+		cp ../packages/patch_crc_PDOcall $CRC/
+		cd $CRC/src/server;
+		patch -p1 < ../../patch_crc_PDOcall
+		
+	fi
+	
 }
 
 install_java(){

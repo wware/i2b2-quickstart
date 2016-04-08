@@ -1,0 +1,6 @@
+docker network create -d bridge my-i2b2-network
+docker build  -t i2b2/i2b2-web i2b2-web
+docker run -d  --net my-i2b2-network -p 443:443 -p 80:80 --name i2b2-web i2b2/i2b2-web
+docker stop i2b2-web
+docker rm i2b2-web
+docker rmi i2b2/i2b2-web

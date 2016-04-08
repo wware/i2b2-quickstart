@@ -91,16 +91,24 @@ install_i2b2webclient(){
 	if [ -d /var/www/html/webclient ]
 	then echo "webclient folder already exists"
 	else 
-		mkdir /var/www/html/admin
-		mkdir /var/www/html/webclient/
-		cp -rv $BASE_CORE/i2b2-webclient-master/* /var/www/html/admin/
-		cp -rv $BASE_CORE/i2b2-webclient-master/* /var/www/html/webclient/
-		cp conf/webclient/i2b2_config_data.js /var/www/html/webclient/
-		cp conf/admin/i2b2_config_data.js /var/www/html/admin/
-		sed -i -- "s/127.0.0.1/$IP/" /var/www/html/webclient/i2b2_config_data.js
-		sed -i -- "s/127.0.0.1/$IP/" /var/www/html/admin/i2b2_config_data.js
-		
+		copy_webclient_dir $BASE $IP /var/www/html
 	fi
+}
+
+copy_webclient_dir(){
+	local BASE=$1
+	local IP=$2
+	local TAR=$3
+	UNZIP_DIR=$BASE/unzipped_packages
+		mkdir $TAR/admin
+		mkdir $TAR/webclient/
+		cp -rv $UNZIP_DIR/i2b2-webclient-master/* $TAR/admin/
+		cp -rv $UNZIP_DIR/i2b2-webclient-master/* $TAR/webclient/
+		cp $BASE/conf/webclient/i2b2_config_data.js $TAR/webclient/
+		cp $BASE/conf/admin/i2b2_config_data.js $TAR/admin/
+		sed -i -- "s/127.0.0.1/$IP/" $TAR/webclient/i2b2_config_data.js
+		sed -i -- "s/127.0.0.1/$IP/" $TAR/admin/i2b2_config_data.js
+
 }
 #install_httpd
 #install_webclient
