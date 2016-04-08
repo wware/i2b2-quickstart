@@ -1,4 +1,4 @@
-installs i2b2 hive and webclient on amazon webservice vm
+installs i2b2 hive and webclient on centos vm, amazon webservice and Docker 
 
 cd i2b2-install
 
