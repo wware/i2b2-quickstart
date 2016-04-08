@@ -36,50 +36,6 @@ install_httpd(){
 		fi
 }
 
-load_demo_data(){
-
-	echo "drop database i2b2;" |psql -U postgres
-
-	BASE="/home/ec2-user/i2b2-install"
-	DATA_BASE="$BASE/unzipped_packages/i2b2-data-master"
-	cat create_database.sql |psql -U postgres 
-	cat create_users.sql |psql -U postgres i2b2
-
-	cd "$DATA_BASE/edu.harvard.i2b2.data/Release_1-7/NewInstall/Crcdata/"
-	echo "pwd:$PWD"
-	cat scripts/crc_create_datamart_postgresql.sql|psql -U postgres i2b2
-	cat scripts/crc_create_query_postgresql.sql|psql -U postgres i2b2
-	cat scripts/crc_create_uploader_postgresql.sql|psql -U postgres i2b2
-	cat scripts/expression_concept_demo_insert_data.sql|psql -U postgres i2b2
-	cat scripts/expression_obs_demo_insert_data.sql|psql -U postgres i2b2
-	for x in $(ls scripts/postgresql/); do cat scripts/postgresql/$x|psql -U postgres i2b2;done;
-
-	cd "$DATA_BASE/edu.harvard.i2b2.data/Release_1-7/NewInstall/Hivedata/"
-	mkdir ~/tmp
-	for x in "create_postgresql_i2b2hive_tables.sql" "work_db_lookup_postgresql_insert_data.sql" "ont_db_lookup_postgresql_insert_data.sql" "im_db_lookup_postgresql_insert_data.sql" "crc_db_lookup_postgresql_insert_data.sql"
-	do echo "SET search_path TO i2b2hive;">~/tmp/t ;cat scripts/$x>>~/tmp/t;cat ~/tmp/t|psql -U postgres i2b2 ;done;
-
-	cd ../Pmdata/
-	for x in "create_postgresql_i2b2pm_tables.sql" "create_postgresql_triggers.sql"
-	do echo $x;cat scripts/$x|psql -U postgres i2b2 ;done;
-	cat scripts/pm_access_insert_data.sql|psql -U postgres i2b2
-
-	echo "grant all privileges on all tables in schema i2b2hive to i2b2hive;"|psql -U postgres i2b2
-
-	cd "$DATA_BASE/edu.harvard.i2b2.data/Release_1-7/NewInstall/Metadata/"
-	for x in $(ls scripts/*postgresql*); do echo $x;cat $x|psql -U postgres i2b2 ;done;
-	for x in $(ls demo/scripts/*.sql); do echo $x;cat $x|psql -U postgres i2b2 ;done;
-	for x in $(ls demo/scripts/postgresql/*); do echo $x;cat $x|psql -U postgres i2b2 ;done;
-	cat scripts/pm_access_insert_data.sql|psql -U postgres i2b2
-
-	cd "$DATA_BASE/edu.harvard.i2b2.data/Release_1-7/NewInstall/Workdata/";
-	x="scripts/create_postgresql_i2b2workdata_tables.sql"; echo $x;cat $x|psql -U postgres i2b2;
-	x="scripts/workplace_access_demo_insert_data.sql"; echo $x;cat $x|psql -U postgres i2b2;
-
-	cd "$BASE"
-	cat grant_privileges.sql |psql -U postgres i2b2
-}
-
 install_i2b2webclient(){
 	BASE=$1
 	IP=$2
