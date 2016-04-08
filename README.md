@@ -2,7 +2,7 @@ installs i2b2 hive and webclient on centos vm, amazon webservice and Docker  (se
 
 ###Quickstart
 
-cd i2b2-install
+cd i2b2-quickstart
 
 git clone https://github.com/waghsk/i2b2-quickstart.git
 
