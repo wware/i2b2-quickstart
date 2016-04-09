@@ -6,9 +6,8 @@ load_demo_data(){
 	BASE=$1
 	DATA_BASE="$BASE/unzipped_packages/i2b2-data-master"
 
-	IP=$2
-
-	PARG=$3
+	PARG=$2
+	IP=$3
 
 	cd "$DATA_BASE/edu.harvard.i2b2.data/Release_1-7/NewInstall/Crcdata/"
 	echo ">>>>>pwd:$PWD IP:$IP"
