@@ -53,6 +53,7 @@ download_i2b2_source(){
 	 echo " downloading $x"
 	[ -f  $x.zip ] || wget -v https://github.com/i2b2/$x/archive/master.zip -O $x.zip
 	done
+	cd $BASE
 }
 
 unzip_i2b2core(){
@@ -75,7 +76,7 @@ unzip_i2b2core(){
 		patch -p1 < ../../patch_crc_PDOcall
 		
 	fi
-	
+	cd $BASE	
 }
 
 install_java(){

@@ -37,7 +37,7 @@ if psql -U postgres -lqt | cut -d \| -f 1 |grep "i2b2";then
 	echo "i2b2 db exists in postgres"
 else
 	source scripts/postgres/load_data.sh $(pwd)
-	create_db_schema $(pwd) postgres;
+	create_db_schema $(pwd) "-U postgres";
 	load_demo_data $(pwd)  $IP 
 fi
 _

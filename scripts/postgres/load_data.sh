@@ -52,9 +52,9 @@ load_demo_data(){
 }
 
 create_db_schema(){
-	USER=$2
-	echo "drop database i2b2;"|psql -U $USER
-	cat $1/scripts/postgres/create_schemas.sql|psql -U $USER 
+	PARG=$2
+	echo "drop database i2b2;"|psql $PARG
+	cat $1/scripts/postgres/create_schemas.sql|psql $PARG 
 }
 
 #create_db_schema $1;
