@@ -6,7 +6,7 @@ LOCAL=$BASE/local
 
 #CONFIGURE
 JBOSS_HOME=$LOCAL/jboss-as-7.1.1.Final
-JAVA_HOME=$LOCAL/jdk1.7.0_51
+JAVA_HOME=$LOCAL/jdk1.8.0_60
 AXIS_HOME=$LOCAL/axis
 ANT_HOME=$LOCAL/ant
 ##########
@@ -14,12 +14,12 @@ ANT_HOME=$LOCAL/ant
 echo "in INSTALL FILE PWD:$PWD"
 
 AXIS_FILE=axis2-1.6.2-war.zip
-JDK_FILE=jdk-7u51-linux-x64.tar.gz
+JDK_FILE=jdk-8u60-linux-x64.tar.gz
 ANT_FILE=apache-ant-1.9.6-bin.tar.bz2
 JBOSS_FILE=jboss-as-7.1.1.Final.tar.gz
 
 #check if the home directories are found as specified by user, or use default dirs
-[ -d $JAVA_HOME ] || JAVA_HOME=$LOCAL/jdk1.7.0_51;#$LOCAL/${JDK_FILE/\.tar\.gz/}
+[ -d $JAVA_HOME ] || JAVA_HOME=$LOCAL/jdk1.8.0_60;#$LOCAL/${JDK_FILE/\.tar\.gz/}
 [ -d $JBOSS_HOME ] || JBOSS_HOME=$LOCAL/${JBOSS_FILE/\.tar\.gz/}
 [ -d $ANT_HOME ] || ANT_HOME=$LOCAL/${ANT_FILE/-bin\.tar\.bz2/}
 [ -d $AXIS_HOME ] || AXIS_HOME=$LOCAL/axis
@@ -67,8 +67,9 @@ unzip_i2b2core(){
 	
 	CRC="i2b2-core-server-master/edu.harvard.i2b2.crc"
 
-	echo ">>PWD:$(pwd)"
-	if [ -f $CRC/patch_crc_PDOCall ];then
+	#echo ">>PWD:$(pwd) $CRC/patch_crc_PDOcall"
+	#echo "searching for $CRC/patch_crc_PDOcall"
+	if [ -f "$CRC/patch_crc_PDOcall" ];then
 		echo "PATCH is already applied"
 	else
 		cp ../packages/patch_crc_PDOcall $CRC/
@@ -85,7 +86,10 @@ install_java(){
 	if [ -f $JDK_FILE ]
 	then echo "FOUND $JDK_FILE" 
 	else
-		curl --create-dirs -L --cookie "oraclelicense=accept-securebackup-cookie; gpw_e24=http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html" http://download.oracle.com/otn-pub/java/jdk/7u51-b13/$JDK_FILE -o $JDK_FILE
+	wget --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.tar.gz
+	#tar -xzf jdk-8u60-linux-x64.tar.gz
+
+		#curl --create-dirs -L --cookie "oraclelicense=accept-securebackup-cookie; gpw_e24=http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html" http://download.oracle.com/otn-pub/java/jdk/7u51-b13/$JDK_FILE -o $JDK_FILE
 	fi
 
 	cd $LOCAL	
@@ -152,24 +156,34 @@ install_wildfly(){
 	else
 		tar -xvzf $BASE/packages/$JBOSS_FILE
 		
+		sed -i -e s/port-offset:0/port-offset:1010/  "$JBOSS_HOME/standalone/configuration/standalone.xml"
+
+	fi
+	copy_axis_to_wildfly $JBOSS_HOME
+}
+
+copy_axis_to_wildfly(){
+	[[ $1 ]] && JBOSS_HOME=$1
+	if [ -d $JBOSS_HOME/standalone/deployments/i2b2.war ] ; then 
+		echo "axis already copied to JBOSS"
+	else
 		mkdir -p $JBOSS_HOME/standalone/deployments/i2b2.war
 
 		cd "$JBOSS_HOME/standalone/deployments/i2b2.war"
 		unzip $AXIS_HOME/axis2.zip
 		echo ""> $JBOSS_HOME/standalone/deployments/i2b2.war.dodeploy
-		sed -i -e s/port-offset:0/port-offset:1010/  "$JBOSS_HOME/standalone/configuration/standalone.xml"
-
 	fi
 }
 
-
 compile_i2b2core(){
 	BASE=$1
-	export JRE_HOME=$JAVA_HOME
 	local BASE_CORE="$BASE/unzipped_packages/i2b2-core-server-master"
 	local CONF_DIR=$BASE/conf
 	local DB=postgres	
-
+	if [[ $2 ]]; then
+		JBOSS_HOME=$2;
+		echo "using JBOSS_HOME=$JBOSS_HOME"
+	fi
 
 	local TAR_DIR="$BASE_CORE/edu.harvard.i2b2.server-common"
 	cd $TAR_DIR
@@ -235,10 +249,10 @@ run_wildfly(){
 	sh $JBOSS_HOME/bin/standalone.sh
 }
 
-check_homes_for_install $(pwd)
-download_i2b2_source $BASE
-unzip_i2b2core $BASE
-compile_i2b2core $BASE
+#check_homes_for_install $(pwd)
+#download_i2b2_source $BASE
+#unzip_i2b2core $BASE
+#compile_i2b2core $BASE
 
 run_all(){
 check_homes_for_install $(pwd)

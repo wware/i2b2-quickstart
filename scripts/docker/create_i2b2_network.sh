@@ -10,35 +10,39 @@ fi
 
 echo "PWD;$(pwd)"
 
-	source $BASE/scripts/install/install.sh $BASE
-	compile_i2b2core $BASE
 #Docker App Path
-DAP=$DOCKER_HOME/i2b2-wildfly
+APP=i2b2-wildfly
+
+DAP=$DOCKER_HOME/$APP
 if [ -d $DAP ]; then
 	echo "found $DAP"
 else
 	mkdir -p "$DAP" & echo "created $DAP"
 	
-	midr -p $DAP/jbh
-	export JBOSS_HOME=$DAP/jbh/
+	mkdir -p $DAP/jbh
+	
+	cp -rv $BASE/conf/docker/$APP/* $DAP
+
 	source $BASE/scripts/install/install.sh $BASE
 	check_homes_for_install $BASE
-
-	alias ant=$ANT_HOME/bin/ant
-	alias java="$JAVA_HOME/bin/java"
-	
 	download_i2b2_source $BASE
 	unzip_i2b2core $BASE
 	
-	echo "JAVA_HOME=$JAVA_HOME"
-	#run_wildfly $BASE
+	JBOSS_HOME=$DAP/jbh/
+	echo "JBOSS_HOME=$JBOSS_HOME"
+	compile_i2b2core $BASE $JBOSS_HOME
+	copy_axis_to_wildfly $JBOSS_HOME	
+#run_wildfly $BASE
+	tar -cvjf $DAP/jbh/standalone/deployments/i2b2-war.tar.bz2  $DAP/jbh/standalone/deployments/i2b2.war
 
-	cp -rv $BASE/conf/httpd/* $DAP
-	cp -rv $BASE/conf/docker/i2b2-web/* $DAP
-	#docker build  -t i2b2/web $DAP/
-	#docker run -d  --net i2b2-net -p 443:443 -p 80:80 --name i2b2-web i2b2/web
+	docker stop $APP;docker rm $APP; docker rmi i2b2/wildfly
+	docker build  -t i2b2/wildfly $DAP/
+	docker run -d -p 8080:8080 -p 9990:9990 --name $APP i2b2/wildfly
+	
+	#docker run -it jboss/wildfly /opt/jboss/wildfly/bin/domain.sh -b 0.0.0.0 -bmanagement 0.0.0.0
+
 fi
-
+exit
 
 DAP=$DOCKER_HOME/i2b2-web
 
