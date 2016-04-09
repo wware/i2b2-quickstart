@@ -38,7 +38,7 @@ if psql -U postgres -lqt | cut -d \| -f 1 |grep "i2b2";then
 else
 	source scripts/postgres/load_data.sh $(pwd)
 	create_db_schema $(pwd) "-U postgres";
-	load_demo_data $(pwd)  $IP 
+	load_demo_data $(pwd)  $IP " -d i2b2 " 
 fi
 _
 

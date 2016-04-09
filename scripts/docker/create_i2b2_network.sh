@@ -41,15 +41,19 @@ else
 	docker ps
 	#DIP=$(docker inspect --format '{{ index .NetworkSettings "Networks" "i2b2-net" "IPAddress"}} ' i2b2-pg)
 	DIP=$( docker-machine ip default)
-	#source $BASE/scripts/postgres/load_data.sh $(pwd)
+	source $BASE/scripts/postgres/load_data.sh $(pwd)
 
 	USERT=" -U i2b2 -d i2b2 -h $DIP ";
 	echo "USERT=$USERT"
 	#echo "\dt+;"|psql $USERT
-	export PGPASSWORD=pass;echo "\dt+;"|psql -h 192.168.99.100 -U i2b2 -d i2b2
-	#create_db_schema $(pwd) "$USERT";
-        #load_demo_data $(pwd) i2b2-web	
-fi	
+	sleep 5
+	PGPASSWORD=pass;echo "\dt+;"|psql -h 192.168.99.100 -U i2b2 -d i2b2
+	create_db_schema $(pwd) "$USERT";
+	PGPASSWORD="demouser";
+        load_demo_data $(pwd) "$DIP" " -h $DIP -d i2b2 "	
+fi
+
+sh /tmp/qq.sql
 
 #docker stop i2b2-web
 #docker rm i2b2-web
