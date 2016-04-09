@@ -12,7 +12,6 @@ echo "PWD;$(pwd)"
 
 #Docker App Path
 APP=i2b2-wildfly
-
 DAP=$DOCKER_HOME/$APP
 if [ -d $DAP ]; then
 	echo "found $DAP"
@@ -30,10 +29,13 @@ else
 	
 	JBOSS_HOME=$DAP/jbh/
 	echo "JBOSS_HOME=$JBOSS_HOME"
-	compile_i2b2core $BASE $JBOSS_HOME
 	copy_axis_to_wildfly $JBOSS_HOME	
+	compile_i2b2core $BASE $JBOSS_HOME
 #run_wildfly $BASE
-	tar -cvjf $DAP/jbh/standalone/deployments/i2b2-war.tar.bz2  $DAP/jbh/standalone/deployments/i2b2.war
+
+	cd  $DAP/jbh/standalone/deployments/
+	tar -cvjf i2b2-war.tar.bz2  i2b2.war/*
+	cd $BASE
 
 	docker stop $APP;docker rm $APP; docker rmi i2b2/wildfly
 	docker build  -t i2b2/wildfly $DAP/
