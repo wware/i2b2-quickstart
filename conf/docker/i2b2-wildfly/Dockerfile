@@ -3,11 +3,14 @@ FROM jboss/wildfly
 #ADD jbh/standalone/deployments/wildfly-helloworld.war /opt/jboss/wildfly/standalone/deployments/
 
 
-ADD jbh/standalone/deployments/i2b2-war.tar.bz2  /opt/jboss/wildfly/standalone/deployments/
-ADD jbh/standalone/deployments/* /opt/jboss/wildfly/standalone/deployments/
+#ADD jbh/standalone/deployments/i2b2-war.tar.bz2  /opt/jboss/wildfly/standalone/deployments/
+#ADD jbh/standalone/deployments/* /opt/jboss/wildfly/standalone/deployments/
 
 #ADD jbh/standalone/deployments/i2b2\.war /opt/jboss/wildfly/standalone/deployments/
-ADD jbh/standalone/configuration/* /opt/jboss/wildfly/standalone/configuration/
+#ADD jbh/standalone/configuration/* /opt/jboss/wildfly/standalone/configuration/
+
+ADD jbh/standalone/deploy.tar.bz2  /opt/jboss/wildfly/standalone/
+ADD jbh/standalone/config.tar.bz2  /opt/jboss/wildfly/standalone/
 
 RUN /opt/jboss/wildfly/bin/add-user.sh admin demoadmin --silent
 

@@ -29,12 +29,10 @@ else
 	JBOSS_HOME=$DAP/jbh/
 	echo "JBOSS_HOME=$JBOSS_HOME"
 	copy_axis_to_wildfly $JBOSS_HOME	
-	compile_i2b2core $BASE $JBOSS_HOME 
+	compile_i2b2core $BASE $JBOSS_HOME /opt/jboss/wildfly/standalone/configuration 
 #run_wildfly $BASE
 	
 	
-	cd  $DAP/jbh/standalone/deployments/
-	tar -cvjf i2b2-war.tar.bz2  i2b2.war/*
 	
 	cd  $DAP/jbh/standalone
 	for x in $(find -iname *.xml); do
@@ -43,12 +41,21 @@ else
 		sed -i  s/127.0.0.1/$DIP/ "$x"
 		sed -i  s/9090/8080/ "$x"
 	done
+#	PWD=$(pwd)
+#	CONFD=/opt/jboss/wildfly/standalone/configuration
 	for x in $(find -iname *.properties); do
 		echo $x
 		sed -i  s/localhost/$DIP/ "$x"
 		sed -i  s/127.0.0.1/$DIP/ "$x"
 		sed -i  s/9090/8080/ "$x"
+#		sed -i s|$PWD|$CONFD| "$x"
 	done
+	cd  $DAP/jbh/standalone/
+	tar -cvjf deploy.tar.bz2 deployments/*
+	
+	cd  $DAP/jbh/standalone/
+	tar -cvjf config.tar.bz2 configuration/*
+	
 	cd $BASE
 
 
