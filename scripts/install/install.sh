@@ -185,11 +185,17 @@ compile_i2b2core(){
 		echo "using JBOSS_HOME=$JBOSS_HOME"
 	fi
 
-	#if [[ $3 ]];then
-	#	SPRING_CONF_HOME=$3	
-	#else
-	#    [[ -z SPRING_CONF_HOME ]] && SPRING_CONF_HOME=$JBOSS_HOME
-	#fi
+	if [ $# -gt 2 ];then
+		SPRING_CONF_HOME=$3	
+	else
+	    SPRING_CONF_HOME=$JBOSS_HOME
+	fi
+
+	if [ $# -gt 3 ];then
+		SCP=$4 #SPRING_CONF_PATH	
+	else
+	    SCP=$JBOSS_HOME
+	fi
 	
 	
 
@@ -225,12 +231,10 @@ compile_i2b2core(){
 	cd $TAR_DIR
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 	
-	echo "edu.harvard.i2b2.ontology.applicationdir=$SCP" >> "$TAR_DIR/etc/spring/ontology_application_directory.properties"
 	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/$DB/* etc/jboss/
 
-	SCP="$3/ontologyapp"
-	#sed -i "s|edu.harvard.i2b2.ontology.applicationdir|$SCP|" src/core/edu/harvard/i2b2/ontology/util/OntologyUtil.java
 
+	echo "edu.harvard.i2b2.ontology.applicationdir=$SCP/standalone/configuration/ontologyapp" >> "$TAR_DIR/etc/spring/ontology_application_directory.properties"
 	ant -f master_build.xml clean build-all 
 	echo "edu.harvard.i2b2.ontology.applicationdir=$SPRING_CONF_HOME/standalone/configuration/ontologyapp" >> "$TAR_DIR/etc/spring/ontology_application_directory.properties"
 	ant -f master_build.xml deploy
@@ -246,12 +250,7 @@ compile_i2b2core(){
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/$DB/* etc/jboss/
 	
-	SCP="$3/crcapp"
-	echo "edu.harvard.i2b2.crc.applicationdir=$SCP" >> "$TAR_DIR/etc/spring/crc_application_directory.properties"
-	
-	#sed -i "s|edu.harvard.i2b2.crc.applicationdir|$SCP|" src/server/edu/harvard/i2b2/crc/loader/util/CRCLoaderUtil.java
-	#sed -i "s|edu.harvard.i2b2.crc.applicationdir|$SCP|" src/server/edu/harvard/i2b2/crc/util/QueryProcessorUtil.java
-
+	echo "edu.harvard.i2b2.crc.applicationdir=$SCP/standalone/configuration/crcapp" >> "$TAR_DIR/etc/spring/crc_application_directory.properties"
 	ant -f master_build.xml clean build-all
 	echo "edu.harvard.i2b2.crc.applicationdir=$SPRING_CONF_HOME/standalone/configuration/crcapp" >> "$TAR_DIR/etc/spring/crc_application_directory.properties"
 	ant -f master_build.xml deploy
@@ -266,11 +265,7 @@ compile_i2b2core(){
 	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
 	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/$DB/* etc/jboss/
 	
-	SCP=$3/workplaceapp
-	echo "edu.harvard.i2b2.workplace.applicationdir=$SCP" >> "$TAR_DIR/etc/spring/workplace_application_directory.properties"
-	
-	#sed -i "s|edu.harvard.i2b2.workplace.applicationdir|$SCP|" src/edu/harvard/i2b2/workplace/util/WorkplaceUtil.java
-	
+	echo "edu.harvard.i2b2.workplace.applicationdir=$SCP/standalone/configuration/workplaceapp" >> "$TAR_DIR/etc/spring/workplace_application_directory.properties"
 	ant -f master_build.xml clean build-all
 	echo "edu.harvard.i2b2.workplace.applicationdir=$SPRING_CONF_HOME/standalone/configuration/workplaceapp" >> "$TAR_DIR/etc/spring/workplace_application_directory.properties"
 	ant -f master_build.xml deploy

@@ -26,10 +26,10 @@ else
 	cp -rv $BASE/conf/docker/$APP/* $DAP
 
 	
-	JBOSS_HOME=$DAP/jbh/
+	JBOSS_HOME=$DAP/jbh
 	echo "JBOSS_HOME=$JBOSS_HOME"
 	copy_axis_to_wildfly $JBOSS_HOME	
-	compile_i2b2core $BASE $JBOSS_HOME /opt/jboss/wildfly/standalone/configuration 
+	compile_i2b2core $BASE $JBOSS_HOME $JBOSS_HOME /opt/jboss/wildfly
 #run_wildfly $BASE
 	
 	
