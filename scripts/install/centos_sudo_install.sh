@@ -55,6 +55,15 @@ copy_webclient_dir(){
 	local BASE=$1
 	local IP=$2
 	local TAR=$3
+
+	echo "received  BASE:$BASE IP:$IP TAR:$TAR"
+	if [ -d $TAR ];then
+		echo "found $TAR"
+	else 
+		 echo "dir:$TAR does not exist"  
+		exit
+	fi
+
 	UNZIP_DIR=$BASE/unzipped_packages
 		mkdir $TAR/admin
 		mkdir $TAR/webclient/

@@ -3,7 +3,7 @@ FROM centos:centos7
 MAINTAINER <Kavishwar (Kavi)  Wagholikar>
 
 RUN yum -y update && yum clean all
-RUN yum -y install httpd mod_ssl && yum clean all
+RUN yum -y install httpd mod_ssl php && yum clean all
 
 EXPOSE 80 443
 
