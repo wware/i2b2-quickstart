@@ -5,7 +5,7 @@ BASE=$PWD
 LOCAL=$BASE/local
 
 #CONFIGURE
-JBOSS_HOME=$LOCAL/jboss-as-7.1.1.Final
+JBOSS_HOME=$LOCAL/wildfly-9.0.1.Final
 JAVA_HOME=$LOCAL/jdk1.8.0_60
 AXIS_HOME=$LOCAL/axis
 ANT_HOME=$LOCAL/ant
@@ -16,7 +16,7 @@ echo "in INSTALL FILE PWD:$PWD"
 AXIS_FILE=axis2-1.6.2-war.zip
 JDK_FILE=jdk-8u60-linux-x64.tar.gz
 ANT_FILE=apache-ant-1.9.6-bin.tar.bz2
-JBOSS_FILE=jboss-as-7.1.1.Final.tar.gz
+JBOSS_FILE=wildfly-9.0.1.Final.tar.gz
 
 #check if the home directories are found as specified by user, or use default dirs
 [ -d $JAVA_HOME ] || JAVA_HOME=$LOCAL/jdk1.8.0_60;#$LOCAL/${JDK_FILE/\.tar\.gz/}
@@ -144,7 +144,7 @@ download_wildfly(){
 	if [ -f $JBOSS_FILE ]
 	then echo "FOUND $JBOSS_FILE"
 	else
-		wget http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/$JBOSS_FILE
+		wget http://download.jboss.org/wildfly/9.0.1.Final/wildfly-9.0.1.Final.tar.gz
 	fi
 	cd $BASE
 }
