@@ -1,5 +1,7 @@
 
+sudo yum -y install wget tar unzip zip postgresql docker
 sudo yum -y update
+
 sudo tee /etc/yum.repos.d/docker.repo <<-'EOF'
 [dockerrepo]
 name=Docker Repository
