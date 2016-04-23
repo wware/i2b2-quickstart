@@ -1,4 +1,6 @@
 FROM jboss/wildfly
+MAINTAINER <Kavishwar (Kavi)  Wagholikar waghsk@gmail.com>
+
 #ADD your-awesome-app.war /opt/jboss/wildfly/standalone/deployments/
 #ADD jbh/standalone/deployments/wildfly-helloworld.war /opt/jboss/wildfly/standalone/deployments/
 

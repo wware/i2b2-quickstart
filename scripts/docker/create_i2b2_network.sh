@@ -99,20 +99,34 @@ if [ -d $DAP ]; then
 else
 	mkdir -p "$DAP" & echo "created $DAP"
 	docker stop $APP;docker rm $APP; docker rmi i2b2/pg
-	
-	docker run --net i2b2-net --name $APP -d -p 5432:5432 -v /var/lib/pgsql -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' centos/postgresql
-	docker ps
-	#DIP=$(docker inspect --format '{{ index .NetworkSettings "Networks" "i2b2-net" "IPAddress"}} ' i2b2-pg)
-	source $BASE/scripts/postgres/load_data.sh $(pwd) 
 
-	USERT=" -U i2b2 -d i2b2 -h $DIP ";
-	echo "USERT=$USERT"
-	#echo "\dt+;"|psql $USERT
-	sleep 5
-	export PGPASSWORD=pass;echo "\dt+;"|psql -h 192.168.99.100 -U i2b2 -d i2b2
-	create_db_schema $(pwd) "$USERT";
-	export PGPASSWORD=demouser;
-        load_demo_data $(pwd) " -h $DIP -d i2b2 " $DIP
+	export POSTGRES_PASSWORD='pass'
+	export POSTGRES_USER='i2b2'
+	export POSTGRES_DB='i2b2'
+	
+	
+	cp -rv $BASE/conf/docker/$APP/* $DAP
+	
+	docker build  -t i2b2/pg $DAP/
+	docker run -d  -p 5432:5432 --net i2b2-net --name i2b2-pg   -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' i2b2/pg
+
+
+
+	
+
+#	docker run --net i2b2-net --name $APP -d -p 5432:5432 -v /var/lib/pgsql -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' centos/postgresql
+#	docker ps
+#	#DIP=$(docker inspect --format '{{ index .NetworkSettings "Networks" "i2b2-net" "IPAddress"}} ' i2b2-pg)
+#	source $BASE/scripts/postgres/load_data.sh $(pwd) 
+
+#	USERT=" -U i2b2 -d i2b2 -h $DIP ";
+#	echo "USERT=$USERT"
+#	#echo "\dt+;"|psql $USERT
+#	sleep 5
+#	export PGPASSWORD=pass;echo "\dt+;"|psql -h 192.168.99.100 -U i2b2 -d i2b2
+#	create_db_schema $(pwd) "$USERT";
+#	export PGPASSWORD=demouser;
+#        load_demo_data $(pwd) " -h $DIP -d i2b2 " $DIP
 fi
 
 
