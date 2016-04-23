@@ -33,8 +33,8 @@ RUN    /etc/init.d/postgresql start &&\
     createdb -O docker docker
 
 RUN /etc/init.d/postgresql start &&\
-   psql --command "CREATE USER i2b21 WITH SUPERUSER PASSWORD 'demouser';" &&\
-    createdb -O i2b21 i2b21
+   psql --command "CREATE USER i2b2 WITH SUPERUSER PASSWORD 'demouser';" &&\
+    createdb -O i2b2 i2b2
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible.
 RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.conf
@@ -48,5 +48,11 @@ EXPOSE 5432
 # Add VOLUMEs to allow backup of config, logs and databases
 #VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
+COPY prescript.sh /
+COPY update_pm_cell_data.sh /
+COPY pm_access_insert_data.sql /
+
 # Set the default command to run when starting the container
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+#CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+#CMD ["bash","-C","prescript.sh"," && ","/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+CMD bash -C prescript.sh  && /usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main -c config_file=/etc/postgresql/9.3/main/postgresql.conf
