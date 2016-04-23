@@ -106,7 +106,7 @@ install_ant(){
 	if [ -f $ANT_FILE ]
 	then echo "Found $ANT_FILE"
 	else
-		wget http://apache.mirrors.ionfish.org//ant/binaries/$ANT_FILE
+		wget http://archive.apache.org/dist/ant/binaries/$ANT_FILE
 	fi
 	cd $BASE
 	if [ -d $ANT_HOME ];then echo "FOUND ANT_HOME:$ANT_HOME"

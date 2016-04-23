@@ -1,4 +1,4 @@
-#docker network create -d bridge i2b2-net
+#!/bin/sh
 BASE=$1
 DOCKER_HOME=$BASE/local/docker
 
