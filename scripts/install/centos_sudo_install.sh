@@ -36,6 +36,17 @@ install_httpd(){
 		fi
 }
 
+#mariadb
+install_mysql(){
+	cp $BASE/conf/yum/mariadb_centos.repo /etc/yum.repos.d/
+	sudo yum -y install mysql
+}
+
+install_vpn(){
+	yum install epel-release
+	sudo yum -y install openvpn
+}
+
 install_i2b2webclient(){
 	BASE=$1
 	IP=$2

@@ -24,6 +24,9 @@ install_httpd(){
 		sudo service httpd start
 }
 
+
+
+
 load_demo_data(){
 
 	echo "drop database i2b2;" |psql -U postgres
