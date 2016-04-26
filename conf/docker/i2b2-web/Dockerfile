@@ -20,5 +20,7 @@ ADD ./admin /var/www/html/admin/
 #ADD ../../../unzipped_packages/webclient /var/www/html/webclient/
 #ADD ../../../unzipped_packages/admin /var/www/html/admin/
 
+COPY prescript.sh /
+RUN chmod -v +x /prescript.sh
 
 CMD ["/run-httpd.sh"]

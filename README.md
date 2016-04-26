@@ -20,3 +20,6 @@ to allow remote connections to database add
 listen_addresses='*'
 
 to /var/lib/pgsql9/data/postgresql.conf
+
+###To install as docker containers
+sudo sh scripts/docker/run_docker_network.sh PUBLIC_IP

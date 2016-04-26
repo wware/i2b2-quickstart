@@ -86,7 +86,7 @@ else
 
 	docker stop $APP;docker rm $APP; docker rmi i2b2/web
 	docker build  -t i2b2/web $DAP/
-	docker run -d  -p 443:443 -p 80:80 --net i2b2-net --name i2b2-web i2b2/web
+	docker run -d  -p 443:443 -p 80:80 --net i2b2-net --name i2b2-web i2b2/web /run-httpd.sh localhost
 fi
 
 
