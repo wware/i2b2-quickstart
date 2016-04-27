@@ -9,5 +9,6 @@ sudo yum -y install wget tar unzip zip postgresql docker
 sudo yum -y update
 
 #install docker compose
-sudo yum -y install epel-release python-pip
+sudo yum -y install epel-release 
+sudo yum -y install python-pip
 sudo pip install docker-compose
