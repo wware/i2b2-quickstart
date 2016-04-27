@@ -21,5 +21,8 @@ listen_addresses='*'
 
 to /var/lib/pgsql9/data/postgresql.conf
 
-###To install as docker containers
+###To create i2b2 docker containers
 sudo sh scripts/docker/run_docker_network.sh PUBLIC_IP
+
+###To directly install i2b2 docker containers from docker hub
+see instructions in wiki at [link](https://github.com/waghsk/i2b2-quickstart/wiki/Docker)
