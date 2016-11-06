@@ -3,6 +3,7 @@ BASE=$1
 DOCKER_HOME=$BASE/local/docker
 
 DIP=$2
+alias docker="sudo docker"
 
 docker network create i2b2-net
 
@@ -12,7 +13,6 @@ echo "PWD;$(pwd)"
 	check_homes_for_install $BASE
 	download_i2b2_source $BASE
 	unzip_i2b2core $BASE
-
 #Docker App Path
 APP=i2b2-wildfly
 DAP=$DOCKER_HOME/$APP
@@ -37,18 +37,19 @@ else
 	cd  $DAP/jbh/standalone
 	for x in $(find -iname *.xml); do
 		echo $x
-		sed -i  s/localhost/$DIP/ "$x"
-		sed -i  s/127.0.0.1/$DIP/ "$x"
+		#only change pg-datasourc to i2b2-pg
+		sed -i  s/localhost:5432/i2b2-pg:5432/ "$x"
+#		sed -i  s/localhost/i2b2-pg/ "$x"
+#		sed -i  s/127.0.0.1/$DIP/ "$x"
 		sed -i  s/9090/8080/ "$x"
 	done
 #	PWD=$(pwd)
 #	CONFD=/opt/jboss/wildfly/standalone/configuration
 	for x in $(find -iname *.properties); do
 		echo $x
-		sed -i  s/localhost/$DIP/ "$x"
-		sed -i  s/127.0.0.1/$DIP/ "$x"
+#		sed -i  s/localhost/i2b2-pg/ "$x"
+#		sed -i  s/127.0.0.1/$DIP/ "$x"
 		sed -i  s/9090/8080/ "$x"
-#		sed -i s|$PWD|$CONFD| "$x"
 	done
 	cd  $DAP/jbh/standalone/
 	tar -cvjf deploy.tar.bz2 deployments/*
@@ -66,7 +67,6 @@ else
 	#docker run -it jboss/wildfly /opt/jboss/wildfly/bin/domain.sh -b 0.0.0.0 -bmanagement 0.0.0.0
 
 fi
-
 
 APP=i2b2-web
 DAP="$DOCKER_HOME/$APP"

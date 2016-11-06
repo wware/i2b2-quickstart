@@ -1,4 +1,4 @@
-FROM jboss/wildfly
+FROM jboss/wildfly:10.0.0.Final
 MAINTAINER <Kavishwar (Kavi)  Wagholikar waghsk@gmail.com>
 
 #ADD your-awesome-app.war /opt/jboss/wildfly/standalone/deployments/
