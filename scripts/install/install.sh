@@ -16,7 +16,7 @@ echo "in INSTALL FILE PWD:$PWD"
 AXIS_FILE=axis2-1.6.2-war.zip
 JDK_FILE=jdk-8u92-linux-x64.tar.gz
 ANT_FILE=apache-ant-1.9.6-bin.tar.bz2
-JBOSS_FILE=wildfly-9.0.1.Final.tar.gz
+JBOSS_FILE=wildfly-9.0.1.Final.zip
 
 #check if the home directories are found as specified by user, or use default dirs
 [ -d $JAVA_HOME ] || JAVA_HOME=$LOCAL/jdk1.8.0_92;#$LOCAL/${JDK_FILE/\.tar\.gz/}
@@ -159,7 +159,7 @@ install_wildfly(){
 	if [ -d $JBOSS_HOME ]
 	then echo "FOUND $JBOSS_HOME"
 	else
-		tar -xvzf $BASE/packages/$JBOSS_FILE
+		unzip $BASE/packages/$JBOSS_FILE
 		
 		sed -i -e s/port-offset:0/port-offset:1010/  "$JBOSS_HOME/standalone/configuration/standalone.xml"
 
