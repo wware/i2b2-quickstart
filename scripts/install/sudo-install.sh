@@ -9,7 +9,8 @@ install_postgres(){
 	else
 		#sudo yum install http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
 		#sudo yum install http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm
-		sudo yum -y install https://www.dropbox.com/s/igqmyfj8boijvaz/pgdg-centos94-9.4-1.noarch.rpm
+		sudo wget https://www.dropbox.com/s/igqmyfj8boijvaz/pgdg-centos94-9.4-1.noarch.rpm
+		sudo yum -y install pgdg-centos94-9.4-1.noarch.rpm
 		sudo yum -y install postgresql94-server postgresql94-contrib
 
 		sudo service postgresql94 initdb
