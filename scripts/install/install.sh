@@ -20,7 +20,7 @@ JBOSS_FILE=wildfly-9.0.1.Final.zip
 
 #check if the home directories are found as specified by user, or use default dirs
 [ -d $JAVA_HOME ] || JAVA_HOME=$LOCAL/jdk1.8.0_92;#$LOCAL/${JDK_FILE/\.tar\.gz/}
-[ -d $JBOSS_HOME ] || JBOSS_HOME=$LOCAL/${JBOSS_FILE/\.tar\.gz/}
+[ -d $JBOSS_HOME ] || JBOSS_HOME=$LOCAL/${JBOSS_FILE/\.zip/}
 [ -d $ANT_HOME ] || ANT_HOME=$LOCAL/${ANT_FILE/-bin\.tar\.bz2/}
 [ -d $AXIS_HOME ] || AXIS_HOME=$LOCAL/axis
 
