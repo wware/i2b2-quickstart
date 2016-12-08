@@ -7,7 +7,9 @@ install_postgres(){
 	if [ -d /var/lib/pgsql94/data/ ]
 	then echo "postgres already installed"
 	else
-		sudo yum install http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+		#sudo yum install http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+		#sudo yum install http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm
+		sudo yum install https://www.dropbox.com/s/igqmyfj8boijvaz/pgdg-centos94-9.4-1.noarch.rpm?dl=0
 		sudo yum install yum install postgresql94-server postgresql94-contrib
 
 		sudo service postgresql94 initdb
