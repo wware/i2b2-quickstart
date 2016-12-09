@@ -122,7 +122,7 @@ install_ant(){
 }
 
 
-download_jar(){
+download_axis_jar(){
 	cd $BASE/packages
 	if [ -f $AXIS_FILE ]
 	then echo ""
