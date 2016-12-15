@@ -29,6 +29,9 @@ else
 	JBOSS_HOME=$DAP/jbh
 	echo "JBOSS_HOME=$JBOSS_HOME"
 	copy_axis_to_wildfly $JBOSS_HOME	
+	copy_axis2_to_wildfly_i2b2war $BASE $JBOSS_HOME	
+	#cp i2b2-quickstart/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml $DAP/jbh/standalone/deployments/i2b2.war/WEB-INF/conf/axis2.xml
+
 	compile_i2b2core $BASE $JBOSS_HOME $JBOSS_HOME /opt/jboss/wildfly
 #run_wildfly $BASE
 	

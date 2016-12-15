@@ -180,6 +180,22 @@ copy_axis_to_wildfly(){
 	fi
 }
 
+copy_axis2_to_wildfly_i2b2war(){
+	[[ $1 ]] && BASE=$1
+	[[ $2 ]] && JBOSS_HOME=$2
+
+	_FILE=$JBOSS_HOME/standalone/deployments/i2b2.war/WEB-INF/conf/axis2.xml
+	_FROM_FILE="$BASE/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml"
+	if [ -d $_FILE ] ; then 
+		echo "axis2.xml already copied to i2b2 jboss deploy "
+	else
+		cp $_FROM_FILE $_FILE
+		echo "copying axis2.xml  to i2b2 jboss deploy "
+	fi
+	#cp i2b2-quickstart/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml $DAPP/jbh/standalone/deployments/i2b2.war/WEB-INF/conf/axis2.xml
+}
+
+
 compile_i2b2core(){
 	BASE=$1
 	local BASE_CORE="$BASE/unzipped_packages/i2b2-core-server-master"
@@ -214,6 +230,9 @@ compile_i2b2core(){
 	export PATH="$PATH:$ANT_HOME/bin/:$JAVA_HOME/bin:"
 	
 	ant clean dist deploy jboss_pre_deployment_setup
+#	cp -rv "$CONF_DIR/$CELL_NAME"/etc/axis2/axis2.xml "$TAR_DIR/etc/spring/ontology_application_directory.properties"
+#cp i2b2-quickstart/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml $DAPP/jbh/standalone/deployments/i2b2.war/WEB-INF/conf/axis2.xml
+#cp i2b2-quickstart/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml $DAPP/jbh/standalone/deployments/i2b2.war/WEB-INF/conf/axis2.xml
 
 	echo "PWD:$PWD"
 
