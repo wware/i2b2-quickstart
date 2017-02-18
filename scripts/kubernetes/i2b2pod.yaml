@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: i2b2d
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: i2b2d
+    spec:
+      containers:
+      - name: i2b2-pg
+        image: i2b2/i2b2-pg:0.5
+        command: ["bash"]
+        args: ["-c"," export PUBLIC_IP=$IP;#sh update_pm_cell_data.sh;"]
+        ports:
+        - containerPort: 5432
+      - name: i2b2-wildfly
+        image: i2b2/i2b2-wildfly:0.1
+        ports:
+        - containerPort: 8080
+      - name: i2b2-web
+        image: i2b2/i2b2-web:0.95
+        ports:
+        - containerPort: 80
