@@ -34,16 +34,15 @@ spec:
         exec:
           command: ["/bin/sh", "-c", "printenv;#sleep 10;echo Hello from the postStart handler > /cache/message; export PUBLIC_IP=\"localhost:8080\";sh update_pm_cell_data.sh >> /cache/message; "]
   - name: iwf
-    image: i2b2/i2b2-wildfly:0.1
-    securityContext:
-        privileged: true
-    lifecycle:
-      postStart:
-        exec:
-          command: ["/bin/sh", "-c", "echo \"127.0.0.1 i2b2-pg\" ;"]
+    image: i2b2/i2b2-wildfly:0.21
     volumeMounts:
     - mountPath: /cache
       name: cache-volume
+    env:
+    - name: DS_IP
+      value: "localhost"
+    - name: DS_PORT
+      value: "5432"
     ports:
     - containerPort: 8080
     volumeMounts:

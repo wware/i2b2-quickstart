@@ -33,4 +33,4 @@ EXPOSE 8080 9990
 # This will boot WildFly in the standalone mode and bind to all interface
 #CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
 #CMD bash -C /prescript.sh  && /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 
-ENTRYPOINT ["/bin/bash","-C","/opt/jboss/wildfly/bin/prescript.sh"]
+CMD ["/bin/bash","-C","/opt/jboss/wildfly/bin/prescript.sh"]
