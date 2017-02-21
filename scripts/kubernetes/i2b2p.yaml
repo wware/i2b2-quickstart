@@ -32,7 +32,8 @@ spec:
     lifecycle:
       postStart:
         exec:
-          command: ["/bin/sh", "-c", "printenv;#sleep 10;echo Hello from the postStart handler > /cache/message; export PUBLIC_IP=\"localhost:8080\";sh update_pm_cell_data.sh >> /cache/message; "]
+          command: ["/bin/sh","-c","printenv;sleep 10;echo Hello from the postStart handler > /cache/message;export PUBLIC_IP=\"b.mlnode.net\";sh update_pm_cell_data.sh >> /cache/message;"]
+
   - name: iwf
     image: i2b2/i2b2-wildfly:0.21
     volumeMounts:
@@ -48,6 +49,16 @@ spec:
     volumeMounts:
     - mountPath: /etc1
       name: etc-volume
+
+  - name: iwb
+    image: i2b2/i2b2-web:0.95
+    volumeMounts:
+    - mountPath: /cache
+      name: cache-volume
+    ports:
+    - containerPort: 80
+    command: ["/run-httpd.sh"]
+    args: ["b.mlnode.net"]
 
   volumes:
   - name: cache-volume
