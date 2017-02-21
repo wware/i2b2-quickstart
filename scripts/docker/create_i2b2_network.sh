@@ -41,8 +41,9 @@ else
 	for x in $(find -iname *.xml); do
 		echo $x
 		#only change pg-datasourc to i2b2-pg
-		sed -i  s/localhost:5432/i2b2-pg:5432/ "$x"
-#		sed -i  s/localhost/i2b2-pg/ "$x"
+#		sed -i  s/localhost:5432/i2b2-pg:5432/ "$x"
+#		sed -i  s/localhost:5432/#{systemProperties['DS_IP']:#{systemProperties['DS_PORT']}/ "$x"
+#		sed -i  s/localhost:5432/\${DS_IP}:\${DS_PORT}/ "$x"
 #		sed -i  s/127.0.0.1/$DIP/ "$x"
 		sed -i  s/9090/8080/ "$x"
 	done
