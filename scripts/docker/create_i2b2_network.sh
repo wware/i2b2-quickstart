@@ -45,7 +45,7 @@ else
 #		sed -i  s/localhost:5432/#{systemProperties['DS_IP']:#{systemProperties['DS_PORT']}/ "$x"
 #		sed -i  s/localhost:5432/\${DS_IP}:\${DS_PORT}/ "$x"
 #		sed -i  s/127.0.0.1/$DIP/ "$x"
-		sed -i  s/9090/8080/ "$x"
+#		sed -i  s/9090/8080/ "$x"
 	done
 #	PWD=$(pwd)
 #	CONFD=/opt/jboss/wildfly/standalone/configuration
@@ -53,7 +53,7 @@ else
 		echo $x
 #		sed -i  s/localhost/i2b2-pg/ "$x"
 #		sed -i  s/127.0.0.1/$DIP/ "$x"
-		sed -i  s/9090/8080/ "$x"
+#		sed -i  s/9090/8080/ "$x"
 	done
 	cd  $DAP/jbh/standalone/
 	tar -cvjf deploy.tar.bz2 deployments/*
@@ -66,7 +66,7 @@ else
 
 	docker stop $APP;docker rm $APP; docker rmi i2b2/wildfly
 	docker build  -t i2b2/wildfly $DAP/
-	docker run -d -p 8080:8080 -p 9990:9990 --net i2b2-net --name $APP i2b2/wildfly
+	docker run -d -p 9090:9090 --net i2b2-net --name $APP i2b2/wildfly
 	
 	#docker run -it jboss/wildfly /opt/jboss/wildfly/bin/domain.sh -b 0.0.0.0 -bmanagement 0.0.0.0
 
@@ -85,7 +85,7 @@ else
 
 	cp -rv $BASE/conf/httpd/* $DAP
 	cp -rv $BASE/conf/docker/$APP/* $DAP
-	sed -i  s/9090/8080/ $DAP/i2b2_proxy.conf
+#	sed -i  s/9090/8080/ $DAP/i2b2_proxy.conf
 	sed -i  s/localhost/$DIP/ $DAP/i2b2_proxy.conf
 
 	docker stop $APP;docker rm $APP; docker rmi i2b2/web
