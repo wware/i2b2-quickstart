@@ -292,6 +292,17 @@ copy_axis2_to_wildfly_i2b2war;
 	ant -f master_build.xml deploy
 
 
+	export CELL_NAME="im"
+	export TAR_DIR="$BASE_CORE/edu.harvard.i2b2.${CELL_NAME}"
+	cd $TAR_DIR
+	echo "jboss.home=$JBOSS_HOME" >> "$TAR_DIR/build.properties"
+	cp -rv "$CONF_DIR/$CELL_NAME"/etc-jboss/$DB/* etc/jboss/
+	
+	echo "edu.harvard.i2b2.$CELL_NAME.applicationdir=$SCP/standalone/configuration/im" >> "$TAR_DIR/etc/spring/im_application_directory.properties"
+	ant -f master_build.xml clean build-all
+	echo "edu.harvard.i2b2.workplace.applicationdir=$SPRING_CONF_HOME/standalone/configuration/imapp" >> "$TAR_DIR/etc/spring/im_application_directory.properties"
+	ant -f master_build.xml deploy
+
 }
 run_wildfly(){
 
