@@ -18,15 +18,21 @@ create_dir(){
 write_history(){
 	_PAK=$1
 	_TAG=$2
-	echo "$_TAG">>"$HISTORY_DIR/$_PAK"
+	echo "$_TAG">"$HISTORY_DIR/$_PAK"
 }
 
 create_dir $TDIR;
 create_dir $HISTORY_DIR;
 
-cd $TDIR
-LINK="https://github.com/i2b2/$PAK/archive/$TAG.tar.gz"
-echo "downloading $LINK"
-wget -O downloaded_tar $LINK && write_history $PAK $TAG
-tar -xvzf downloaded_tar --strip 1
-rm -rf downloaded_tar
+LAST_TAG=$(cat $HISTORY_DIR/$PAK)
+
+if [ "$LAST_TAG" == "$TAG" ]; then
+	echo "latest release was already processed"
+else 
+	cd $TDIR
+	LINK="https://github.com/i2b2/$PAK/archive/$TAG.tar.gz"
+	echo "downloading $LINK"
+	wget -O downloaded_tar $LINK && write_history $PAK $TAG
+	tar -xvzf downloaded_tar --strip 1
+	rm -rf downloaded_tar
+fi
