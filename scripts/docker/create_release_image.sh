@@ -7,6 +7,9 @@ if [ $SUF == "wildfly" ]; then
 elif [ $SUF == "web" ]; then
 		PAK="i2b2-web"
 		PAKTAR="i2b2-webclient" 
+elif [ $SUF == "pg" ]; then
+		PAK="i2b2-pg"
+		PAKTAR="i2b2-data" 
 fi
 
 check_pass_set(){
