@@ -4,6 +4,9 @@ SUF=$2  #i2b2-core-server
 if [ $SUF == "wildfly" ]; then
 	PAK="i2b2-$SUF"
 	PAKTAR="i2b2-core-server" 
+elif [ $SUF == "web" ]; then
+		PAK="i2b2-web"
+		PAKTAR="i2b2-webclient" 
 fi
 
 check_pass_set(){
