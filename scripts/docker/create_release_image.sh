@@ -5,10 +5,10 @@ if [ $SUF == "wildfly" ]; then
 	PAK="i2b2-$SUF"
 	PAKTAR="i2b2-core-server" 
 elif [ $SUF == "web" ]; then
-		PAK="i2b2-web"
+		PAK="i2b2-$SUF"
 		PAKTAR="i2b2-webclient" 
 elif [ $SUF == "pg" ]; then
-		PAK="i2b2-pg"
+		PAK="i2b2-$SUF"
 		PAKTAR="i2b2-data" 
 fi
 
@@ -79,4 +79,8 @@ IMG=$(docker images i2b2/$SUF --format {{.ID}})
 docker tag $IMG i2b2/$PAK:release-$TAG
 docker login -u i2b2auto -p "$I2B2AUTO_PASS"
 docker push i2b2/$PAK:release-$TAG
+
+docker tag $IMG i2b2/$PAK:release-latest
+docker login -u i2b2auto -p "$I2B2AUTO_PASS"
+docker push i2b2/$PAK:release-latest
 

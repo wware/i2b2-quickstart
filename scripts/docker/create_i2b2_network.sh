@@ -3,7 +3,7 @@ BASE=$1
 DOCKER_HOME=$BASE/local/docker
 
 DIP=$2
-alias docker="sudo docker"
+alias docker=" docker"
 
 docker network create i2b2-net
 
