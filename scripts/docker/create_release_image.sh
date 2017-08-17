@@ -80,7 +80,7 @@ docker tag $IMG i2b2/$PAK:release-$TAG
 docker login -u i2b2auto -p "$I2B2AUTO_PASS"
 docker push i2b2/$PAK:release-$TAG
 
-docker tag $IMG i2b2/$PAK:release-latest
+docker tag $IMG i2b2/$PAK:latest
 docker login -u i2b2auto -p "$I2B2AUTO_PASS"
-docker push i2b2/$PAK:release-latest
+docker push i2b2/$PAK:latest
 
