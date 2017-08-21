@@ -86,7 +86,8 @@ else
 	cp -rv $BASE/conf/httpd/* $DAP
 	cp -rv $BASE/conf/docker/$APP/* $DAP
 #	sed -i  s/9090/8080/ $DAP/i2b2_proxy.conf
-	sed -i  s/localhost/$DIP/ $DAP/i2b2_proxy.conf
+#	sed -i  s/localhost/$DIP/ $DAP/i2b2_proxy.conf
+	sed -i  s/localhost/i2b2-wildfly/ $DAP/i2b2_proxy.conf
 
 	docker stop $APP;docker rm $APP; docker rmi i2b2/web
 	docker build  -t i2b2/web $DAP/
