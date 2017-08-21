@@ -29,8 +29,8 @@ install_httpd(){
 		if [ -f /etc/httpd/conf.d/i2b2_proxy.conf ]; then
 			echo "httpd already installed"
 		else
-			echo "ProxyPreserveHost on" > /etc/httpd/conf.d/i2b2_proxy.conf		
-			echo "ProxyPass /i2b2/ http://localhost:9090/i2b2/" >> /etc/httpd/conf.d/i2b2_proxy.conf		
+			#echo "ProxyPreserveHost on" > /etc/httpd/conf.d/i2b2_proxy.conf		
+			echo "ProxyPass /i2b2/ http://localhost:9090/i2b2/" > /etc/httpd/conf.d/i2b2_proxy.conf		
 			echo "ProxyPassReverse /i2b2/ http://localhost:9090/i2b2/" >> /etc/httpd/conf.d/i2b2_proxy.conf		
 			sudo chkconfig httpd on 
 			sudo service httpd start
