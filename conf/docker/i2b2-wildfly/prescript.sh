@@ -2,6 +2,10 @@
 
 echo ">>>running prescript"
 
+#echo "copying datasources for particular type of db:$DSTYPE"
+#cp -rv /opt/jboss/config/$DSTYPE/* /opt/jboss/wildfly/standalone/deployments/
+
+
 cd /opt/jboss/wildfly/standalone/deployments/;
 
 for x in $(find -iname '*.xml');
