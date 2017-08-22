@@ -28,6 +28,7 @@ ENV JBOSS_HOME /opt/jboss/wildfly
 
 ENV DS_IP ${DS_IP:-i2b2-pg}
 ENV DS_PORT ${DS_PORT:-5432}
+ENV DS_TYPE ${DS_TYPE:-postgres}
 
 
 # Expose the ports we're interested in
