@@ -65,8 +65,8 @@ else
 
 
 	docker stop $APP;docker rm $APP; docker rmi i2b2/wildfly
-	docker build  -t i2b2/wildfly $DAP/
-	docker run -d -p 9090:9090 --net i2b2-net --name $APP i2b2/wildfly
+	docker build  -t i2b2/i2b2-wildfly $DAP/
+	docker run -d -p 8080:8080 --net i2b2-net --name $APP i2b2/i2b2-wildfly
 	
 	#docker run -it jboss/wildfly /opt/jboss/wildfly/bin/domain.sh -b 0.0.0.0 -bmanagement 0.0.0.0
 
@@ -90,8 +90,8 @@ else
 	sed -i  s/localhost/i2b2-wildfly/ $DAP/i2b2_proxy.conf
 
 	docker stop $APP;docker rm $APP; docker rmi i2b2/web
-	docker build  -t i2b2/web $DAP/
-	docker run -d  -p 443:443 -p 80:80 --net i2b2-net --name i2b2-web i2b2/web /run-httpd.sh localhost
+	docker build  -t i2b2/i2b2-web $DAP/
+	docker run -d  -p 443:443 -p 80:80 --net i2b2-net --name i2b2-web i2b2/i2b2-web /run-httpd.sh localhost
 fi
 
 
@@ -105,15 +105,16 @@ else
 	mkdir -p "$DAP" & echo "created $DAP"
 	docker stop $APP;docker rm $APP; docker rmi i2b2/pg
 
-	export POSTGRES_PASSWORD='pass'
-	export POSTGRES_USER='i2b2'
-	export POSTGRES_DB='i2b2'
-	
+#	export POSTGRES_PASSWORD='pass'
+#	export POSTGRES_USER='i2b2'
+#	export POSTGRES_DB='i2b2'
+	export PGIP=0.0.0.0
+		
 	
 	cp -rv $BASE/conf/docker/$APP/* $DAP
 	
-	docker build  -t i2b2/pg $DAP/
-	docker run -d  -p 5432:5432 --net i2b2-net --name i2b2-pg   -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' i2b2/pg
+	docker build  -t i2b2/i2b2-pg $DAP/
+	docker run -d  -p 5432:5432 --net i2b2-net --name i2b2-pg   -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' i2b2/i2b2-pg
 
 
 #	docker run --net i2b2-net --name $APP -d -p 5432:5432 -v /var/lib/pgsql -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' centos/postgresql
@@ -121,14 +122,13 @@ else
 #	#DIP=$(docker inspect --format '{{ index .NetworkSettings "Networks" "i2b2-net" "IPAddress"}} ' i2b2-pg)
 	source $BASE/scripts/postgres/load_data.sh $(pwd) 
 
-	USERT=" -U i2b2 -d i2b2 -h $DIP ";
+	USERT=" -U i2b2 -d i2b2 -h $PGIP ";
 	echo "USERT=$USERT"
 #	#echo "\dt+;"|psql $USERT
-	sleep 5
-	export PGPASSWORD=demouser;echo "\dt+;"|psql -h $DIP -U i2b2 -d i2b2
+	sleep 15
+	export PGPASSWORD=demouser;echo "\dt+;"|psql -h $PGIP -U i2b2 -d i2b2
 	create_db_schema $(pwd) "$USERT";
-	export PGPASSWORD=demouser;
-        load_demo_data $(pwd) " -h $DIP -d i2b2 " $DIP
+        load_demo_data $(pwd) " -h $PGIP -d i2b2 " $DIP
 
 fi
 
