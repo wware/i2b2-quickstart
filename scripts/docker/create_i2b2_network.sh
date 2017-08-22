@@ -35,20 +35,32 @@ else
 	compile_i2b2core $BASE $JBOSS_HOME $JBOSS_HOME /opt/jboss/wildfly
 #run_wildfly $BASE
 	
+	#copy datasource config for each cell into datatype
+	#cells: crc ont workspace im
+	#for DBT in postgres oracle mssql;
+	#do
+		#cp conf/ontology/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
+		#cp conf/pm/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
+		#cp conf/im/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
+		#cp conf/crc/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
+		#cp conf/workplace/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
+		
+	#done
 	
-	
-	cd  $DAP/jbh/standalone
-	for x in $(find -iname *.xml); do
-		echo $x
+	#this step is moved to the prescript
+#	cd  $DAP/jbh/standalone
+#	for x in $(find -iname *.xml); do
+#		echo $x
 		#only change pg-datasourc to i2b2-pg
 #		sed -i  s/localhost:5432/i2b2-pg:5432/ "$x"
 #		sed -i  s/localhost:5432/#{systemProperties['DS_IP']:#{systemProperties['DS_PORT']}/ "$x"
 #		sed -i  s/localhost:5432/\${DS_IP}:\${DS_PORT}/ "$x"
 #		sed -i  s/127.0.0.1/$DIP/ "$x"
 #		sed -i  s/9090/8080/ "$x"
-	done
+#	done
 #	PWD=$(pwd)
 #	CONFD=/opt/jboss/wildfly/standalone/configuration
+#	Check if this step is required
 	for x in $(find -iname *.properties); do
 		echo $x
 #		sed -i  s/localhost/i2b2-pg/ "$x"
