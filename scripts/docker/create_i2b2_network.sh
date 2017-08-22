@@ -113,9 +113,8 @@ else
 	
 	cp -rv $BASE/conf/docker/$APP/* $DAP
 	
-	docker build  -t i2b2/i2b2-pg $DAP/
-	docker run -d  -p 5432:5432 --net i2b2-net --name i2b2-pg   -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' i2b2/i2b2-pg
-
+	docker build  -t i2b2/i2b2-pg-empty $DAP/
+	docker run -d  -p 5432:5432 --net i2b2-net --name i2b2-pg   -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' i2b2/i2b2-pg-empty
 
 #	docker run --net i2b2-net --name $APP -d -p 5432:5432 -v /var/lib/pgsql -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' centos/postgresql
 #	docker ps
@@ -129,6 +128,15 @@ else
 	export PGPASSWORD=demouser;echo "\dt+;"|psql -h $PGIP -U i2b2 -d i2b2
 	create_db_schema $(pwd) "$USERT";
         load_demo_data $(pwd) " -h $PGIP -d i2b2 " $DIP
+
+	#docker rm -f i2b2/i2b2-pg
+	#docker run -d  -p 5432:5432 --net i2b2-net --name i2b2-pg   i2b2/i2b2-pg:latest
+	#sleep 5;
+	#docker tag i2b2
+	CID=$(docker ps -aqf "name=i2b2-empty")
+	docker commit $CID i2b2/i2b2-pg
+	docker exec -it i2b2-pg bash -c "export PUBLIC_IP=$IP_ADD;sh update_pm_cell_data.sh; "
+
 
 fi
 
