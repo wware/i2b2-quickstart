@@ -53,7 +53,7 @@ else
 		echo $x
 #		sed -i  s/localhost/i2b2-pg/ "$x"
 #		sed -i  s/127.0.0.1/$DIP/ "$x"
-#		sed -i  s/9090/8080/ "$x"
+		sed -i  s/9090/8080/ "$x"
 	done
 	cd  $DAP/jbh/standalone/
 	tar -cvjf deploy.tar.bz2 deployments/*
