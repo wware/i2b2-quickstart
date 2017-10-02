@@ -32,11 +32,11 @@ else
 	copy_axis2_to_wildfly_i2b2war $BASE $JBOSS_HOME	
 
 	compile_i2b2core $BASE $JBOSS_HOME $JBOSS_HOME /opt/jboss/wildfly
-	#for x in $(find -iname *.properties); do
-#		echo $x
-#		sed -i  s/9090/8080/ "$x"
-#	done
 	cd  $DAP/jbh/standalone/
+	for x in $(find -iname *.properties); do
+		echo "prop##### $x"
+		sed -i  s/9090/8080/ "$x"
+	done
 	tar -cvjf deploy.tar.bz2 deployments/*
 	tar -cvjf config.tar.bz2 configuration/*
 	
