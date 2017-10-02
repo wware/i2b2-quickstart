@@ -30,47 +30,14 @@ else
 	echo "JBOSS_HOME=$JBOSS_HOME"
 	copy_axis_to_wildfly $JBOSS_HOME	
 	copy_axis2_to_wildfly_i2b2war $BASE $JBOSS_HOME	
-	#cp i2b2-quickstart/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml $DAP/jbh/standalone/deployments/i2b2.war/WEB-INF/conf/axis2.xml
 
 	compile_i2b2core $BASE $JBOSS_HOME $JBOSS_HOME /opt/jboss/wildfly
-#run_wildfly $BASE
-	
-	#copy datasource config for each cell into datatype
-	#cells: crc ont workspace im
-	#for DBT in postgres oracle mssql;
-	#do
-		#cp conf/ontology/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
-		#cp conf/pm/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
-		#cp conf/im/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
-		#cp conf/crc/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
-		#cp conf/workplace/etc-jboss/$DBT/ont-ds.xml $DAP/datasource_config/$DBT/
-		
-	#done
-	
-	#this step is moved to the prescript
-#	cd  $DAP/jbh/standalone
-#	for x in $(find -iname *.xml); do
+	#for x in $(find -iname *.properties); do
 #		echo $x
-		#only change pg-datasourc to i2b2-pg
-#		sed -i  s/localhost:5432/i2b2-pg:5432/ "$x"
-#		sed -i  s/localhost:5432/#{systemProperties['DS_IP']:#{systemProperties['DS_PORT']}/ "$x"
-#		sed -i  s/localhost:5432/\${DS_IP}:\${DS_PORT}/ "$x"
-#		sed -i  s/127.0.0.1/$DIP/ "$x"
 #		sed -i  s/9090/8080/ "$x"
 #	done
-#	PWD=$(pwd)
-#	CONFD=/opt/jboss/wildfly/standalone/configuration
-#	Check if this step is required
-	for x in $(find -iname *.properties); do
-		echo $x
-#		sed -i  s/localhost/i2b2-pg/ "$x"
-#		sed -i  s/127.0.0.1/$DIP/ "$x"
-		sed -i  s/9090/8080/ "$x"
-	done
 	cd  $DAP/jbh/standalone/
 	tar -cvjf deploy.tar.bz2 deployments/*
-	
-	cd  $DAP/jbh/standalone/
 	tar -cvjf config.tar.bz2 configuration/*
 	
 	cd $BASE
@@ -80,7 +47,6 @@ else
 	docker build  -t i2b2/i2b2-wildfly $DAP/
 	docker run -d -p 8080:8080 --net i2b2-net --name $APP i2b2/i2b2-wildfly
 	
-	#docker run -it jboss/wildfly /opt/jboss/wildfly/bin/domain.sh -b 0.0.0.0 -bmanagement 0.0.0.0
 
 fi
 

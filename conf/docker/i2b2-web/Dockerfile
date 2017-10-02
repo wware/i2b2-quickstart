@@ -13,12 +13,15 @@ RUN chmod -v +x /run-httpd.sh
 
 
 ADD ./i2b2_proxy.conf /etc/httpd/conf.d/i2b2_proxy.conf
-ADD ./webclient /var/www/html/webclient/
-ADD ./admin /var/www/html/admin/
+ADD ./i2b2_proxy.conf /conftemp/etc/httpd/conf.d/i2b2_proxy.conf
 
-#ADD ../../httpd/i2b2_proxy.conf /etc/httpd/conf.d/i2b2_proxy.conf
-#ADD ../../../unzipped_packages/webclient /var/www/html/webclient/
-#ADD ../../../unzipped_packages/admin /var/www/html/admin/
+ADD ./webclient /var/www/html/webclient/
+ADD ./webclient /conftemp/var/www/html/webclient/
+
+ADD ./admin /var/www/html/admin/
+ADD ./admin /conftemp/var/www/html/admin/
+
+ENV APP_IP ${APP_IP:-i2b2-wildfly}
 
 COPY prescript.sh /
 RUN chmod -v +x /prescript.sh
