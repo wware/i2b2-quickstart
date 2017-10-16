@@ -307,7 +307,7 @@ copy_axis2_to_wildfly_i2b2war;
 run_wildfly(){
 
 #	cd $JBOSS_HOME
-	sh $JBOSS_HOME/bin/standalone.sh
+	sh $JBOSS_HOME/bin/standalone.sh -b 0.0.0.0
 }
 
 #check_homes_for_install $(pwd)
