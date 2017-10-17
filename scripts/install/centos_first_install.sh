@@ -6,7 +6,9 @@ if [[ $IP ]];then
 	echo "using given IP"
 else
 	IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
+	IP90="$IP:9090"
 	echo "IP:$IP"
+	echo "IP90:$IP90"
 fi
 
 sudo yum -y install ant tar sed bzip2 git php perl wget zip unzip httpd patch
@@ -15,19 +17,34 @@ service iptables stop
  
 sudo -u nobody bash -c : && RUNAS="sudo -u $SUDO_USER"
 
+LLOCAL=/opt/local
+LLOCALGIT=/opt/local/git
+mkdir $LLOCAL
+mkdir $LLOCALGIT
+
+cd $LLOCALGIT
+
 $RUNAS bash << _
-#git clone https://github.com/waghsk/i2b2-install
-#cd i2b2-install
-source scripts/install/install.sh
-download_i2b2_source $(pwd)
-unzip_i2b2core $(pwd)
+git clone https://github.com/kmullins/i2b2-quickstart.git 
+
+cd $LLOCAL
+
+source $LLOCALGIT/i2b2-quickstart/scripts/install/install.sh
+
+download_i2b2_source $LLOCAL
+unzip_i2b2core $LLOCAL
 _
+exit
+exit
 
 
-BASE=$(pwd)
-source scripts/install/centos_sudo_install.sh
+
+
+
+BASE=$LLOCAL
+source $LLOCALGIT/i2b2-quickstart/scripts/install/centos_sudo_install.sh
 install_httpd
-install_i2b2webclient $(pwd) $IP
+install_i2b2webclient $LLOCAL $IP90
 
 #install_i2b2admin
 install_postgres
