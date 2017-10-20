@@ -65,7 +65,7 @@ if psql -U postgres -lqt | cut -d \| -f 1 |grep "i2b2";then
 else
 	source $LLOCALGIT/i2b2-quickstart/scripts/postgres/load_data.sh $(pwd)
 	create_db_schema $(pwd) "-U postgres";
-	load_demo_data $(pwd) " -d i2b2 " $IP 
+#####	load_demo_data $(pwd) " -d i2b2 " $IP 
 fi
 _
 
