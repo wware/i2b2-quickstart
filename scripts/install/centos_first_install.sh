@@ -69,12 +69,17 @@ else
 fi
 _
 
+exit
+exit
+
+
 $RUNAS bash << _
 source $LLOCALGIT/i2b2-quickstart/scripts/install/install.sh
 check_homes_for_install $(pwd)
 compile_i2b2core $(pwd)  
 run_wildfly $(pwd)
 
+_
 
 
 
