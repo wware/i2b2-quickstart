@@ -1,6 +1,6 @@
 
 PWD=$(pwd)
-BASE=$PWD
+BASE=/opt
 #LOCAL HOME
 LOCAL=$BASE/local
 
