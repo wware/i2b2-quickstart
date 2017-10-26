@@ -1,7 +1,7 @@
 #git clone https://github.com/waghsk/i2b2-install
 
 
-BASE=$1
+BASE=$LOCAL    # changed from $1 to $LOCAL
 
 #sudo yum -y install git php perl wget zip unzip httpd 
 
@@ -62,7 +62,7 @@ install_i2b2webclient(){
 	if [ -d /var/www/html/webclient ]
 	then echo "webclient folder already exists"
 	else 
-		copy_webclient_dir $BASE $IP /var/www/html
+		copy_webclient_dir $BASE $IP90 /var/www/html
 	fi
 }
 

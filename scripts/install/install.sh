@@ -46,7 +46,7 @@ check_homes_for_install(){
 }
  
 download_i2b2_source(){
-	BASE=$1
+	BASE=$LOCAL     #Changing from $1 to $LOCAL
 	cd $BASE/packages;
 	for x in i2b2-webclient i2b2-core-server i2b2-data; do
 	#for x in i2b2-webclient i2b2-data; do
