@@ -1,7 +1,8 @@
 #!/bin/sh
-BASE=$1
-DOCKER_HOME=$BASE/local/docker
-
+#BASE=$1
+#DOCKER_HOME=$BASE/local/docker
+BASE="/opt/local/i2b2-quickstart"
+DOCKER_HOME="/opt/local/docker"
 DIP=$2
 alias docker=" docker"
 
@@ -20,16 +21,16 @@ if [ -d $DAP ]; then
 	echo "found $DAP"
 else
 	mkdir -p "$DAP" & echo "created $DAP"
-	
+
 	mkdir -p $DAP/jbh
-	
+
 	cp -rv $BASE/conf/docker/$APP/* $DAP
 
-	
+
 	JBOSS_HOME=$DAP/jbh
 	echo "JBOSS_HOME=$JBOSS_HOME"
-	copy_axis_to_wildfly $JBOSS_HOME	
-	copy_axis2_to_wildfly_i2b2war $BASE $JBOSS_HOME	
+	copy_axis_to_wildfly $JBOSS_HOME
+	copy_axis2_to_wildfly_i2b2war $BASE $JBOSS_HOME
 
 	compile_i2b2core $BASE $JBOSS_HOME $JBOSS_HOME /opt/jboss/wildfly
 	cd  $DAP/jbh/standalone/
@@ -39,14 +40,14 @@ else
 	done
 	tar -cvjf deploy.tar.bz2 deployments/*
 	tar -cvjf config.tar.bz2 configuration/*
-	
+
 	cd $BASE
 
 
 	docker stop $APP;docker rm $APP; docker rmi i2b2/$APP
 	docker build  -t i2b2/i2b2-wildfly $DAP/
 	docker run -d -p 8080:8080 --net i2b2-net --name $APP i2b2/i2b2-wildfly
-	
+
 
 fi
 
@@ -85,14 +86,14 @@ else
 	docker stop $APP;docker rm $APP; docker rmi i2b2/$APP
 
 	export PGIP=0.0.0.0
-		
-	
+
+
 	cp -rv $BASE/conf/docker/$APP/* $DAP
-	
+
 	docker build  -t i2b2/i2b2-pg $DAP/
 	docker run -d  -p 5432:5432 --net i2b2-net --name i2b2-pg   -e 'DB_USER=i2b2' -e 'DB_PASS=pass' -e 'DB_NAME=i2b2' i2b2/i2b2-pg
 
-	source $BASE/scripts/postgres/load_data.sh $(pwd) 
+	source $BASE/scripts/postgres/load_data.sh $(pwd)
 
 	USERT=" -U i2b2 -d i2b2 -h $PGIP ";
 	echo "USERT=$USERT"
@@ -112,5 +113,3 @@ else
 
 
 fi
-
-
