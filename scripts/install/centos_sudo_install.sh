@@ -1,8 +1,7 @@
 #git clone https://github.com/waghsk/i2b2-install
 
-
-BASE=$LOCAL    # changed from $1 to $LOCAL
-
+BASE=/opt/local/i2b2-quickstart
+LOCAL=/opt/local
 #sudo yum -y install git php perl wget zip unzip httpd 
 
 install_postgres(){
@@ -54,7 +53,7 @@ install_vpn(){
 install_i2b2webclient(){
 	BASE=$1
 	IP=$2
-	BASE_CORE=$BASE/unzipped_packages
+	BASE_CORE=$LOCAL/unzipped_packages
 	echo "BASE_CORE:$BASE_CORE"
 	[ -d $BASE_CORE/i2b2-webclient-master/ ]|| echo " webclient source not found"  
 	[ -d $BASE_CORE/i2b2-webclient-master/ ]||  exit 
@@ -79,7 +78,7 @@ copy_webclient_dir(){
 		exit
 	fi
 
-	UNZIP_DIR=$BASE/unzipped_packages
+	UNZIP_DIR=$LOCAL/unzipped_packages
 		mkdir $TAR/admin
 		mkdir $TAR/webclient/
 		cp -rv $UNZIP_DIR/i2b2-webclient-master/* $TAR/admin/

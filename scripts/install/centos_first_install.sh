@@ -15,8 +15,8 @@ setenforce 0
 service iptables stop
 
 
-BASE=/opt
-LOCAL=$BASE/local
+BASE=/opt/local/i2b2-quickstart
+LOCAL=/opt/local
 cd $LOCAL
 pwd
 
@@ -30,7 +30,7 @@ git clone https://github.com/kmullins/i2b2-quickstart.git
  [[ -d i2b2-quickstart ]] || echo "Check i2b2quickstart Clone"
 
 echo " running install" 
-source $LOCAL/i2b2-quickstart/scripts/install/install.sh
+source $BASE/scripts/install/install.sh
 if [ $? -ne 0 ]
 then
 	echo "#############  Errors running /scripts/install/install.sh ##########"
@@ -50,7 +50,7 @@ fi
 _
 
 
-source $LOCAL/i2b2-quickstart/scripts/install/centos_sudo_install.sh
+source $BASE/scripts/install/centos_sudo_install.sh
 install_httpd
 install_i2b2webclient $LOCAL $IP90
 
@@ -70,7 +70,7 @@ _
 
 
 $RUNAS bash << _
-source $LOCAL/i2b2-quickstart/scripts/install/install.sh
+source $BASE/scripts/install/install.sh
 check_homes_for_install $(pwd)
 compile_i2b2core $(pwd)  
 run_wildfly $(pwd)
