@@ -25,27 +25,30 @@ sudo -u nobody bash -c : && RUNAS="sudo -u $SUDO_USER"
 $RUNAS bash << _
 echo $LOCAL
 cd $LOCAL
-git clone https://github.com/kmullins/i2b2-quickstart.git 
 
- [[ -d i2b2-quickstart ]] || echo "Check i2b2quickstart Clone"
+if [ -d /opt/local/i2b2-quickstart/ ] 
+   then echo "i2b2-quickstart already installed"
+   else
+      git clone https://github.com/kmullins/i2b2-quickstart.git
+   fi
 
-echo " running install" 
+echo " running install.sh" 
 source $BASE/scripts/install/install.sh
 if [ $? -ne 0 ]
 then
-	echo "#############  Errors running /scripts/install/install.sh ##########"
+	echo "### Errors running /scripts/install/install.sh #####"
 fi
 
 download_i2b2_source $LOCAL
 if [ $? -ne 0 ]
 then
-	echo "#############  Problem with download_12b2_sources ##########"
+	echo "####  Problem with download_12b2_sources ####"
 fi
 
 unzip_i2b2core $LOCAL
 if [ $? -ne 0 ]   
 then
-	echo "#############  Problem with unzip i2b2core ##########"
+	echo "####  Problem with unzip i2b2core ####"
 fi
 _
 

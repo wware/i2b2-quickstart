@@ -58,7 +58,7 @@ download_i2b2_source(){
 }
 
 unzip_i2b2core(){
-	[ -d $LOCAL/unzipped_packages ] || mkdir $BASE/unzipped_packages
+	[ -d $LOCAL/unzipped_packages ] || mkdir $LOCAL/unzipped_packages
 	cd $LOCAL/unzipped_packages
 	for x in $(ls ../packages/i2b2*.zip | xargs -n 1 basename); do
 		f=${x/\.zip/-master}
