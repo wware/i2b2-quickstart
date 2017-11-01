@@ -7,55 +7,29 @@ if [[ $IP ]];then
 	IP90="$IP:9090"
 else
 	IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
-	IP90="$IP:9090"
+  IP90="$IP:9090"
+	echo "IP:$IP"
 fi
 
 sudo yum -y install ant tar sed bzip2 git php perl wget zip unzip httpd patch
 setenforce 0
 service iptables stop
 
-
-BASE=/opt/local/i2b2-quickstart
-LOCAL=/opt/local
-cd $LOCAL
-pwd
-
 sudo -u nobody bash -c : && RUNAS="sudo -u $SUDO_USER"
 
 $RUNAS bash << _
-echo $LOCAL
-cd $LOCAL
-
-if [ -d /opt/local/i2b2-quickstart/ ] 
-   then echo "i2b2-quickstart already installed"
-   else
-      git clone https://github.com/kmullins/i2b2-quickstart.git
-   fi
-
-echo " running install.sh" 
-source $BASE/scripts/install/install.sh
-if [ $? -ne 0 ]
-then
-	echo "### Errors running /scripts/install/install.sh #####"
-fi
-
-download_i2b2_source $LOCAL
-if [ $? -ne 0 ]
-then
-	echo "####  Problem with download_12b2_sources ####"
-fi
-
-unzip_i2b2core $LOCAL
-if [ $? -ne 0 ]   
-then
-	echo "####  Problem with unzip i2b2core ####"
-fi
+#git clone https://github.com/kmullins/i2b2-install
+#cd i2b2-install
+source scripts/install/install.sh
+download_i2b2_source $(pwd)
+unzip_i2b2core $(pwd)
 _
 
 
-source $BASE/scripts/install/centos_sudo_install.sh
+BASE=$(pwd)
+source scripts/install/centos_sudo_install.sh
 install_httpd
-install_i2b2webclient $LOCAL $IP90
+install_i2b2webclient $(pwd) $IP90
 
 #install_i2b2admin
 install_postgres
@@ -64,21 +38,15 @@ $RUNAS bash << _
 if psql -U postgres -lqt | cut -d \| -f 1 |grep "i2b2";then
 	echo "i2b2 db exists in postgres"
 else
-	source $LOCAL/i2b2-quickstart/scripts/postgres/load_data.sh $(pwd)
+	source scripts/postgres/load_data.sh $(pwd)
 	create_db_schema $(pwd) "-U postgres";
-
+	load_demo_data $(pwd) " -d i2b2 " $IP 
 fi
 _
 
-
-
 $RUNAS bash << _
-source $BASE/scripts/install/install.sh
+source scripts/install/install.sh
 check_homes_for_install $(pwd)
-compile_i2b2core $(pwd)  
+compile_i2b2core $(pwd)
 run_wildfly $(pwd)
-
 _
-
-
-
