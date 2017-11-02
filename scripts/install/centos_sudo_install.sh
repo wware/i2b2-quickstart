@@ -1,26 +1,27 @@
 #git clone https://github.com/waghsk/i2b2-install
 
+
 BASE=$1
-#LOCAL=/opt/local
-#sudo yum -y install git php perl wget zip unzip httpd
+
+#sudo yum -y install git php perl wget zip unzip httpd 
 
 install_postgres(){
 	if [ -d /var/lib/pgsql/9.4/data/ ]
 	then echo "postgres already installed"
 	else
 		#sudo yum install -y http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
-		#sudo yum install -y http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+		#sudo yum install -y http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm	
 		sudo wget https://www.dropbox.com/s/igqmyfj8boijvaz/pgdg-centos94-9.4-1.noarch.rpm
 		sudo yum -y install pgdg-centos94-9.4-1.noarch.rpm
-                sudo yum -y install postgresql94-server postgresql94-contrib
+                sudo yum -y install postgresql94-server postgresql94-contrib		
 		sudo rm -rf /var/lib/pgsql/9.4/
 		sudo mkdir /var/lib/pgsql/9.4/
 		chown -R postgres:postgres /var/lib/pgsql/9.4/
 		sudo [ -f /usr/pgsql-9.4/bin/postgresql94-setup ] && sudo /usr/pgsql-9.4/bin/postgresql94-setup initdb || sudo service postgresql-9.4 initdb
-		sudo chkconfig postgresql-9.4 on
+		sudo chkconfig postgresql-9.4 on 
 		sudo cp conf/postgresql/pg_hba.conf  /var/lib/pgsql/9.4/data/
 		sudo service postgresql-9.4 start
-
+		
 	fi
 }
 
@@ -28,14 +29,13 @@ install_httpd(){
 		if [ -f /etc/httpd/conf.d/i2b2_proxy.conf ]; then
 			echo "httpd already installed"
 		else
-			#echo "ProxyPreserveHost on" > /etc/httpd/conf.d/i2b2_proxy.conf
-			echo "ProxyPass /i2b2 ajp://localhost:9009/i2b2/" > /etc/httpd/conf.d/i2b2_proxy.conf
-			echo "ProxyPassReverse /i2b2 ajp://localhost:9009/i2b2/" >> /etc/httpd/conf.d/i2b2_proxy.conf
-			sudo chkconfig httpd on
+			#echo "ProxyPreserveHost on" > /etc/httpd/conf.d/i2b2_proxy.conf		
+			echo "ProxyPass /i2b2/ http://localhost:9090/i2b2/" > /etc/httpd/conf.d/i2b2_proxy.conf		
+			echo "ProxyPassReverse /i2b2/ http://localhost:9090/i2b2/" >> /etc/httpd/conf.d/i2b2_proxy.conf		
+			sudo chkconfig httpd on 
 			sudo service httpd start
 			sudo /usr/sbin/setsebool httpd_can_network_connect 1
-			sudo sed -i s/SELINUX=enforcing/SELINUX=disabled/ /etc/sysconfig/selinux
-			sudo sed -i s/SELINUX=enforcing/SELINUX=disabled/ /etc/selinux/config
+			sudo sed -i s/SELINUX=enforcing/SELINUX=disabled/ /etc/sysconfig/selinux 
 		fi
 }
 
@@ -55,13 +55,13 @@ install_i2b2webclient(){
 	IP=$2
 	BASE_CORE=$BASE/unzipped_packages
 	echo "BASE_CORE:$BASE_CORE"
-	[ -d $BASE_CORE/i2b2-webclient-master/ ]|| echo " webclient source not found"
-	[ -d $BASE_CORE/i2b2-webclient-master/ ]||  exit
+	[ -d $BASE_CORE/i2b2-webclient-master/ ]|| echo " webclient source not found"  
+	[ -d $BASE_CORE/i2b2-webclient-master/ ]||  exit 
 
 	if [ -d /var/www/html/webclient ]
 	then echo "webclient folder already exists"
-	else
-		copy_webclient_dir $BASE $IP90 /var/www/html
+	else 
+		copy_webclient_dir $BASE $IP /var/www/html
 	fi
 }
 
@@ -73,8 +73,8 @@ copy_webclient_dir(){
 	echo "received  BASE:$BASE IP:$IP TAR:$TAR"
 	if [ -d $TAR ];then
 		echo "found $TAR"
-	else
-		 echo "dir:$TAR does not exist"
+	else 
+		 echo "dir:$TAR does not exist"  
 		exit
 	fi
 
