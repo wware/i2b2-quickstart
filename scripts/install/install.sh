@@ -1,9 +1,7 @@
 
 PWD=$(pwd)
-BASE=/opt
-
-#LOCAL HOME
-LOCAL=/opt/local
+BASE=$PWD
+LOCAL=$BASE/local
 
 #CONFIGURE
 JBOSS_HOME=$LOCAL/wildfly-9.0.1.Final
@@ -31,7 +29,7 @@ alias java="$JAVA_HOME/bin/java"
 export JAVA_HOME=$JAVA_HOME
 
 echo ">>JBOSS_HOME:$JBOSS_HOME"
-[ -d $LOCAL/packages ] || mkdir -p $LOCAL/packages
+[ -d $BASE/packages ] || mkdir -p $BASE/packages
 
 echo ">>>ran config"
 
@@ -47,8 +45,8 @@ check_homes_for_install(){
 }
 
 download_i2b2_source(){
-#	BASE=$LOCAL     #Changing from $1 to $LOCAL
-	cd $LOCAL/packages;
+	BASE=$1
+	cd $BASE/packages;
 	for x in i2b2-webclient i2b2-core-server i2b2-data; do
 	#for x in i2b2-webclient i2b2-data; do
 	 echo " downloading $x"
@@ -58,12 +56,12 @@ download_i2b2_source(){
 }
 
 unzip_i2b2core(){
-	[ -d $LOCAL/unzipped_packages ] || mkdir $LOCAL/unzipped_packages
-	cd $LOCAL/unzipped_packages
-	for x in $(ls $LOCAL/packages/i2b2*.zip | xargs -n 1 basename); do
+	[ -d $BASE/unzipped_packages ] || mkdir $BASE/unzipped_packages
+	cd $BASE/unzipped_packages
+	for x in $(ls ../packages/i2b2*.zip | xargs -n 1 basename); do
 		f=${x/\.zip/-master}
 		echo "unzipping $x from $f";
-		 [ -d $f ] || unzip $LOCAL/packages/$x
+		 [ -d $f ] || unzip ../packages/$x
 	done
 
 	CRC="i2b2-core-server-master/edu.harvard.i2b2.crc"
@@ -73,17 +71,17 @@ unzip_i2b2core(){
 	if [ -f "$CRC/patch_crc_PDOcall" ];then
 		echo "PATCH is already applied"
 	else
-		cp $LOCAL/packages/patch_crc_PDOcall $CRC/
+		cp ../packages/patch_crc_PDOcall $CRC/
 		cd $CRC/src/server;
 		patch -p1 < ../../patch_crc_PDOcall
 
 	fi
-	cd $LOCAL
+	cd $BASE
 }
 
 install_java(){
 	echo "installing java"
-	cd $LOCAL/packages
+	cd $BASE/packages
 	if [ -f $JDK_FILE ]
 	then echo "FOUND $JDK_FILE"
 	else
@@ -97,34 +95,34 @@ install_java(){
 	fi
 
 	cd $LOCAL
-	if [ -f $LOCAL/packages/$JDK_FILE ]; then echo "found jdk file";
-		tar -xvzf $LOCAL/packages/$JDK_FILE
+	if [ -f $BASE/packages/$JDK_FILE ]; then echo "found jdk file";
+		tar -xvzf $BASE/packages/$JDK_FILE
 	else
-		echo "ERROR: could not find: $LOCAL/packages/$JDK_FILE" 1>&2
+		echo "ERROR: could not find: $BASE/packages/$JDK_FILE" 1>&2
 		exit 75;
 	fi
 }
 
 install_ant(){
-	cd $LOCAL/packages
+	cd $BASE/packages
 	if [ -f $ANT_FILE ]
 	then echo "Found $ANT_FILE"
 	else
 		#wget http://archive.apache.org/dist/ant/binaries/$ANT_FILE
 		wget https://www.dropbox.com/s/nbt6y9t139m8nhk/apache-ant-1.9.6-bin.tar.bz2
 	fi
-	cd $LOCAL
+	cd $BASE
 	if [ -d $ANT_HOME ];then echo "FOUND ANT_HOME:$ANT_HOME"
 	else
 		cd $LOCAL
-		tar -xvjf $LOCAL/packages/$ANT_FILE
+		tar -xvjf $BASE/packages/$ANT_FILE
 	fi
-	cd $LOCAL
+	cd $BASE
 }
 
 
 download_axis_jar(){
-	cd $LOCAL/packages
+	cd $BASE/packages
 	if [ -f $AXIS_FILE ]
 	then echo ""
 	else
@@ -132,27 +130,27 @@ download_axis_jar(){
 		wget https://www.dropbox.com/s/9c0gjqbwssubd76/axis2-1.6.2-war.zip
 	fi
 
-	if [ -d $LOCAL/packages/$AXIS_FILE ]; then echo "found axis dir";
+	if [ -d $BASE/packages/$AXIS_FILE ]; then echo "found axis dir";
 	else
 		cd $LOCAL
 		mkdir axis
 		cd axis
 		echo "AF:$AXIS_FILE"
-		unzip $LOCAL/packages/$AXIS_FILE
+		unzip $BASE/packages/$AXIS_FILE
 		cp  axis2.war axis2.zip
 	fi
-	cd $LOCAL
+	cd $BASE
 }
 
 download_wildfly(){
-	cd $LOCAL/packages
+	cd $BASE/packages
 	if [ -f $JBOSS_FILE ]
 	then echo "FOUND $JBOSS_FILE"
 	else
 		#wget http://download.jboss.org/wildfly/9.0.1.Final/wildfly-9.0.1.Final.tar.gz
 		wget https://www.dropbox.com/s/187wgnwnmglt2wd/wildfly-9.0.1.Final.zip
 	fi
-	cd $LOCAL
+	cd $BASE_CORE
 }
 
 install_wildfly(){
@@ -160,7 +158,7 @@ install_wildfly(){
 	if [ -d $JBOSS_HOME ]
 	then echo "FOUND $JBOSS_HOME"
 	else
-		unzip $LOCAL/packages/$JBOSS_FILE
+		unzip $BASE/packages/$JBOSS_FILE
 
 		sed -i -e s/port-offset:0/port-offset:1010/  "$JBOSS_HOME/standalone/configuration/standalone.xml"
 
@@ -186,7 +184,7 @@ copy_axis2_to_wildfly_i2b2war(){
 	[[ $2 ]] && JBOSS_HOME=$2
 
 	_FILE=$JBOSS_HOME/standalone/deployments/i2b2.war/WEB-INF/conf/axis2.xml
-	_FROM_FILE="$LOCAL/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml"
+	_FROM_FILE="$BASE/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml"
 		cp $_FROM_FILE $_FILE
 		echo "copying axis2.xml  to i2b2 jboss deploy "
 	#cp i2b2-quickstart/unzipped_packages/i2b2-core-server-master/edu.harvard.i2b2.server-common/etc/axis2/axis2.xml $DAPP/jbh/standalone/deployments/i2b2.war/WEB-INF/conf/axis2.xml
@@ -194,9 +192,9 @@ copy_axis2_to_wildfly_i2b2war(){
 
 
 compile_i2b2core(){
-#	BASE=$1    # Not sure if I need this
-	local BASE_CORE="$LOCAL/unzipped_packages/i2b2-core-server-master"
-	local CONF_DIR=/opt/i2b2-quickstart/conf
+	BASE=$1
+	local BASE_CORE="$BASE/unzipped_packages/i2b2-core-server-master"
+	local CONF_DIR=$BASE/conf
 	local DB=postgres
 	if [[ $2 ]]; then
 		JBOSS_HOME=$2;
@@ -308,7 +306,7 @@ copy_axis2_to_wildfly_i2b2war;
 run_wildfly(){
 
 #	cd $JBOSS_HOME
-	sh $JBOSS_HOME/bin/standalone.sh -b 0.0.0.0
+	sh $JBOSS_HOME/bin/standalone.sh
 }
 
 #check_homes_for_install $(pwd)

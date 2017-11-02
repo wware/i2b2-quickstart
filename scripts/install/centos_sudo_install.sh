@@ -1,7 +1,8 @@
 #git clone https://github.com/waghsk/i2b2-install
 
+
 BASE=$1
-#LOCAL=/opt/local
+
 #sudo yum -y install git php perl wget zip unzip httpd
 
 install_postgres(){
@@ -29,13 +30,12 @@ install_httpd(){
 			echo "httpd already installed"
 		else
 			#echo "ProxyPreserveHost on" > /etc/httpd/conf.d/i2b2_proxy.conf
-			echo "ProxyPass /i2b2 ajp://localhost:9009/i2b2/" > /etc/httpd/conf.d/i2b2_proxy.conf
-			echo "ProxyPassReverse /i2b2 ajp://localhost:9009/i2b2/" >> /etc/httpd/conf.d/i2b2_proxy.conf
+			echo "ProxyPass /i2b2/ http://localhost:9090/i2b2/" > /etc/httpd/conf.d/i2b2_proxy.conf
+			echo "ProxyPassReverse /i2b2/ http://localhost:9090/i2b2/" >> /etc/httpd/conf.d/i2b2_proxy.conf
 			sudo chkconfig httpd on
 			sudo service httpd start
 			sudo /usr/sbin/setsebool httpd_can_network_connect 1
 			sudo sed -i s/SELINUX=enforcing/SELINUX=disabled/ /etc/sysconfig/selinux
-			sudo sed -i s/SELINUX=enforcing/SELINUX=disabled/ /etc/selinux/config
 		fi
 }
 
@@ -61,7 +61,7 @@ install_i2b2webclient(){
 	if [ -d /var/www/html/webclient ]
 	then echo "webclient folder already exists"
 	else
-		copy_webclient_dir $BASE $IP90 /var/www/html
+		copy_webclient_dir $BASE $IP /var/www/html
 	fi
 }
 
