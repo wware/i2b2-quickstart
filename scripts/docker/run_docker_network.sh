@@ -52,6 +52,7 @@ echo " "
 
 sudo  docker network create i2b2-net
 
+echo " "
 sudo docker network ls | grep i2b2
 
 
@@ -61,6 +62,7 @@ echo " "
 
 sudo docker run -d  -p 5432:5432 --net i2b2-net --name i2b2-pg   i2b2/i2b2-pg:0.5
 
+echo " "
 sudo docker ps -a | grep i2b2-pg
 
 
@@ -70,6 +72,7 @@ echo " "
 
 sudo docker run -d -p 8080:8080 -p 9990:9990 --net i2b2-net --name i2b2-wildfly i2b2/i2b2-wildfly:0.1
 
+echo " "
 sudo docker ps -a | grep i2b2-wildfly
 
 
@@ -81,6 +84,7 @@ sudo docker run -d  -p 443:443 -p 80:80 --net i2b2-net --name i2b2-web i2b2/i2b2
 
 sleep 10;
 
+echo " "
 sudo docker ps -a | grep i2b2-web
 
 
