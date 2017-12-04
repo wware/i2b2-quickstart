@@ -31,6 +31,6 @@ else
 fi
 
 # Installing miscellaneous packages
-    sudo yum -y install wget tar unzip zip postgresql docker
+    sudo yum -y install wget tar unzip zip postgresql docker vim
     sudo yum -y update
     echo " Done ... "
