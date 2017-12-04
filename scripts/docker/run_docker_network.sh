@@ -102,7 +102,7 @@ sudo docker exec -it i2b2-pg bash -c "export PUBLIC_IP=$IP;sh update_pm_cell_dat
 
 echo " Checking IP's in Web files and the Database"
 
-var1=`docker exec i2b2-web /bin/bash -c "grep Reverse /etc/httpd/conf.d/i2b2_proxy.conf  | grep -oP '\d+\.\d+\.\d+\.\d+'"`
+var1=`docker exec i2b2-web /bin/bash -c "grep localhost /etc/httpd/conf.d/i2b2_proxy.conf  | grep -oP '\d+\.\d+\.\d+\.\d+'"`
 var2=`docker exec i2b2-web /bin/bash -c " grep urlCellPM /var/www/html/webclient/i2b2_config_data.js | grep -oP '\d+\.\d+\.\d+\.\d+'"`
 var3=`docker exec i2b2-web /bin/bash -c " grep urlCellPM /var/www/html/admin/i2b2_config_data.js | grep -oP '\d+\.\d+\.\d+\.\d+'"`
 
