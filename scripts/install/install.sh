@@ -2,6 +2,12 @@
 PWD=$(pwd)
 BASE=$PWD
 LOCAL=$BASE/local
+cd $BASE
+[ -d $LOCAL ] || mkdir $LOCAL
+[ -d $LOCAL ] || exit
+
+
+
 
 #CONFIGURE
 JBOSS_HOME=$LOCAL/wildfly-9.0.1.Final
