@@ -7,8 +7,6 @@ cd $BASE
 [ -d $LOCAL ] || exit
 
 
-
-
 #CONFIGURE
 JBOSS_HOME=$LOCAL/wildfly-9.0.1.Final
 JAVA_HOME=$LOCAL/jdk1.8.0_60
