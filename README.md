@@ -2,27 +2,22 @@ installs i2b2 hive and webclient on centos vm, amazon webservice and Docker  (se
 
 ###Quickstart
 
+1) ssh to the aws instance
 
-git clone https://github.com/waghsk/i2b2-quickstart.git
+2) sudo yum -y install git wget unzip patch bzip2 screen
 
-cd i2b2-quickstart
+3)  sudo su -
+ 
+4) cd /opt
 
-sudo sh scripts/install/centos_first_install.sh 2>&1|tee first.log
+5) mkdir git && cd git
 
-###To test installation
+6) git clone https://github.com/i2b2/i2b2-quickstart.git
 
-see http://ipaddress/webclient/
+7) cd i2b2-quickstart
 
-###Tips
+8) sudo sh scripts/install/centos_first_install.sh 2>&1|tee first.log
 
-to allow remote connections to database add 
+9) Remember to use the **public/external IP_ADDRESS** of the instance in the cmd above.
 
-listen_addresses='*'
-
-to /var/lib/pgsql9/data/postgresql.conf
-
-###To create i2b2 docker containers
-sudo sh scripts/docker/run_docker_network.sh PUBLIC_IP
-
-###To directly install i2b2 docker containers from docker hub
-see instructions in wiki at [link](https://github.com/waghsk/i2b2-quickstart/wiki/Docker)
+10) To verify installation see: http://[ipaddress]/webclient/
