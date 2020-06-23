@@ -44,5 +44,5 @@ $RUNAS bash << _
 source scripts/install/install.sh
 check_homes_for_install $(pwd)
 compile_i2b2core $(pwd)
-run_wildfly $(pwd)
+# run_wildfly $(pwd)
 _
